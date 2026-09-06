@@ -14,7 +14,7 @@ type StateAttr struct {
 }
 
 // Key and Value are for the two libraries that have to reach the strings:
-// tinywasm/dom, which writes the attribute, and widget/style, which emits the
+// webtyp/dom, which writes the attribute, and widget/style, which emits the
 // selector. Reading them to hand-wire a state is the mistake this type exists to
 // prevent — use dom's BindState/SetState instead.
 func (a StateAttr) Key() string   { return a.key }

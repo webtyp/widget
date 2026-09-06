@@ -3,8 +3,8 @@
 package style
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 // validateComposition is the cross-rule half of Validate(): it makes

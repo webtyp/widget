@@ -3,7 +3,7 @@
 package style
 
 import (
-	"github.com/tinywasm/css"
+	"webtyp.com/css"
 )
 
 func spaceVar(s Space) string {

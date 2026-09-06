@@ -5,8 +5,8 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/fmt"
+	"webtyp.com/css"
+	"webtyp.com/fmt"
 )
 
 // emitHover renders the fine-pointer half of `@layer states`:

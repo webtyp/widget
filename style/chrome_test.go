@@ -3,9 +3,9 @@
 package style_test
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 	"strings"
 	"testing"
 )
@@ -51,7 +51,7 @@ func TestFloatingChromeReservesScrollEndSpace(t *testing.T) {
 }
 
 func TestScrollGutterAddsToTheFloatingReservationWithoutReplacingIt(t *testing.T) {
-	// ScrollGutter exists so a consumer (tinywasm/components/listgap) can give
+	// ScrollGutter exists so a consumer (webtyp/components/listgap) can give
 	// a Scroll() region its own ambient top/bottom gutter WITHOUT the plain
 	// widgets-layer PadEdge()/Pad() trap: a later-layer declaration replaces
 	// an earlier one outright (CSS layers do not add), which would silently

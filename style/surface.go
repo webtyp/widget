@@ -2,7 +2,7 @@
 
 package style
 
-import "github.com/tinywasm/css"
+import "webtyp.com/css"
 
 // Surface is a complete visual decision: background, text, and border resolved together.
 type Surface uint8

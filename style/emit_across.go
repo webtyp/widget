@@ -5,7 +5,7 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/fmt"
+	"webtyp.com/fmt"
 )
 
 // emitAcrossRules renders the CueAcross and StateAcross rules UNLAYERED, after

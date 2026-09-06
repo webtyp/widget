@@ -1,6 +1,6 @@
 package widget
 
-import "github.com/tinywasm/fmt"
+import "webtyp.com/fmt"
 
 // Name identifies a widget. It is the prefix of EVERY class it emits,
 // so two widgets cannot collide even if they choose the same part name.

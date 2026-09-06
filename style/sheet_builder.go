@@ -3,8 +3,8 @@
 package style
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
+	"webtyp.com/css"
+	"webtyp.com/widget"
 )
 
 // Root defines the style for the root element of the widget.
@@ -163,7 +163,7 @@ func (s *Sheet) StateAcross(st widget.State, region, part widget.Part, opts ...O
 
 // On defines the style for a part (or Root if p is "") only on the given viewport
 // class. It is the single sanctioned way to vary a widget by device: the query
-// strings live in tinywasm/css and are exhaustively tested there.
+// strings live in webtyp/css and are exhaustively tested there.
 //
 // Reach for a flow primitive first — Split, Grid and Sidebar already reflow on
 // their own. Use On only when the ARRANGEMENT itself differs, e.g. a nav rail

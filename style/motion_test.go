@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 func TestMotion_AnimateSlow(t *testing.T) {

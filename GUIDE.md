@@ -1,6 +1,6 @@
-# User Guide — `tinywasm/widget`
+# User Guide — `webtyp/widget`
 
-This guide helps you choose the correct layout, styling, and structural components using `tinywasm/widget`.
+This guide helps you choose the correct layout, styling, and structural components using `webtyp/widget`.
 
 ## The Decision Table
 

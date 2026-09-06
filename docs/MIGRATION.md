@@ -6,7 +6,7 @@ that choice is in [DESIGN.md §11](DESIGN.md#11-why-one-breaking-release).
 
 ---
 
-## 1. Prerequisite: `tinywasm/css`
+## 1. Prerequisite: `webtyp/css`
 
 This release depends on a `css` release first. Nothing here compiles until it
 lands.
@@ -39,7 +39,7 @@ the fourth changes which constant you should be reaching for.
 
 `Radius*` and `Text*` are unchanged: they already mirror `--radius-*` and
 `--text-*`. If those token names are themselves unreadable, that is a
-`tinywasm/css` question — renaming only on the Go side would reintroduce the
+`webtyp/css` question — renaming only on the Go side would reintroduce the
 translation step this rule removes.
 
 **Spacing is not a 1:1 remap.** The old scale advertised 13 steps and resolved to
@@ -145,7 +145,7 @@ contains, not from what surface it wears.
 | `Hidden()`, `Shown()` | `RevealedBy(state)` |
 | `Above()` | derived from `Kind` — see below |
 | The 27 `*Hover` / `*Focus` / `*Press` surface constants | private; use `Interactive()` |
-| The 18 exported `Color*Hover/Focus/Press` tokens | moved to `tinywasm/css` |
+| The 18 exported `Color*Hover/Focus/Press` tokens | moved to `webtyp/css` |
 | `Rule`, `Triplet`, and all exported `Sheet` fields | `For()` + options only |
 
 ### 4.1 Stacking
@@ -216,16 +216,16 @@ style.For(m).
 
 | Module | Impact |
 |---|---|
-| `tinywasm/form` | `NameField` and its parts are unchanged. Any `RenderCSS()` needs rewriting. |
-| `tinywasm/components/fieldset` | Same. This is the global form skin, so it exercises surfaces and states heavily. |
-| `tinywasm/layout` | Verify before starting whether it overlaps the flow primitives here. If it does, resolve the overlap in this release rather than after it. |
+| `webtyp/form` | `NameField` and its parts are unchanged. Any `RenderCSS()` needs rewriting. |
+| `webtyp/components/fieldset` | Same. This is the global form skin, so it exercises surfaces and states heavily. |
+| `webtyp/layout` | Verify before starting whether it overlaps the flow primitives here. If it does, resolve the overlap in this release rather than after it. |
 
 ---
 
 ## 8. Upgrading to v0.5.0 — one typed way to write a state
 
 v0.5.0 is breaking in exactly one place: `State.Attr()` stopped returning an
-`fmt.KeyValue` and returns a `StateAttr` instead, and `tinywasm/dom` gained the
+`fmt.KeyValue` and returns a `StateAttr` instead, and `webtyp/dom` gained the
 only sanctioned writers. Everything else is additive. Requirement: upgrade to the
 matching `dom` release (`BindState`/`BindStateFunc`/`SetState`) **before** this
 release — nothing here compiles against an older `dom`.
@@ -401,7 +401,7 @@ padding keeps the geometry identical.
 
 ### 9.5 The prerequisite `--chip-height` token
 
-`OnEdge`'s straddle consumes `--chip-height` from `tinywasm/css` (released as
+`OnEdge`'s straddle consumes `--chip-height` from `webtyp/css` (released as
 `css.ChipHeight` in `css` v0.4.10). The `css` dependency in `go.mod` must be at
 least that version.
 
@@ -430,7 +430,7 @@ about it:
 `Within("menu", "options", style.Flyout(...))`, then resolve the theft by
 un-positioning the part in between, moving the `Flyout` out of the docked part,
 or making the docked trigger span its anchor. The resolution chosen for
-`tinywasm/components` ships in its own release.
+`webtyp/components` ships in its own release.
 
 ### 9.7 A `Flyout` inside a `Scroll()` region is rejected
 

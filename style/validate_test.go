@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 // A part whose only job is a primitive emits into @layer primitives, never into

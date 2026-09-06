@@ -1,4 +1,4 @@
-# Design decisions — `tinywasm/widget`
+# Design decisions — `webtyp/widget`
 
 Justifies the technical decisions behind [ARCHITECTURE.md](ARCHITECTURE.md) and
 records the alternatives that were rejected. Does not restate the architecture,
@@ -9,7 +9,7 @@ changed.
 
 ---
 
-## 1. Why `tinywasm/css` stays
+## 1. Why `webtyp/css` stays
 
 **Decision.** Keep the dependency, and narrow this module's use of it to one rule:
 *reference tokens, never invent values.*
@@ -287,7 +287,7 @@ radius and text size, it keeps `Sm`/`Md`/`Lg`, because that is what those tokens
 are called.
 
 **Consequence.** Where the truncation is genuinely unreadable, the question
-belongs to `tinywasm/css`, not here. Renaming only on the Go side would break the
+belongs to `webtyp/css`, not here. Renaming only on the Go side would break the
 mirror and reintroduce the translation step this rule exists to remove.
 
 `Opt` is not a scale and gets expanded to `Option`: it is the most repeated type

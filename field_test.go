@@ -3,7 +3,7 @@ package widget
 import (
 	"testing"
 
-	"github.com/tinywasm/fmt"
+	"webtyp.com/fmt"
 )
 
 func TestFieldAnatomy(t *testing.T) {

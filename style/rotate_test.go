@@ -3,8 +3,8 @@
 package style_test
 
 import (
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 	"strings"
 	"testing"
 )

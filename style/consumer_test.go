@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 type MasterDetail struct{}
@@ -93,20 +93,20 @@ func TestConsumerMasterDetail(t *testing.T) {
 	}
 
 	// 5. GOOS=js build dependency exclusion
-	cmd := exec.Command("go", "list", "-deps", "github.com/tinywasm/widget")
+	cmd := exec.Command("go", "list", "-deps", "webtyp.com/widget")
 	cmd.Env = append(cmd.Environ(), "GOOS=js", "GOARCH=wasm")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		t.Fatalf("Error running 'go list': %v, output: %s", err, string(out))
 	}
-	if strings.Contains(string(out), "github.com/tinywasm/widget/style") {
+	if strings.Contains(string(out), "webtyp.com/widget/style") {
 		t.Error("WASM consumer depends on 'widget/style' package, violating build tag constraints")
 	}
 
-	buildCmd := exec.Command("go", "build", "github.com/tinywasm/widget")
+	buildCmd := exec.Command("go", "build", "webtyp.com/widget")
 	buildCmd.Env = append(buildCmd.Environ(), "GOOS=js", "GOARCH=wasm")
 	if out, err := buildCmd.CombinedOutput(); err != nil {
-		t.Errorf("GOOS=js GOARCH=wasm go build github.com/tinywasm/widget failed: %v, output: %s", err, string(out))
+		t.Errorf("GOOS=js GOARCH=wasm go build webtyp.com/widget failed: %v, output: %s", err, string(out))
 	}
 }
 

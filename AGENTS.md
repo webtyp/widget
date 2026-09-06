@@ -1,4 +1,4 @@
-# AGENTS.md — tinywasm/widget
+# AGENTS.md — webtyp/widget
 
 Constraints for agents changing this library. Read before touching any file.
 
@@ -11,34 +11,34 @@ The goal that decides every argument here: **someone who does not know design bu
 correct, accessible widget without reading this library's source.** An option that
 requires design judgement to use correctly is a defect, even if it compiles.
 
-Consumers: `tinywasm/components`, `tinywasm/layout` (their `//go:build !wasm` `css.go`
-files), `tinywasm/ssr` (extracts the stylesheets). Depends on `tinywasm/css` for every
-value and on `tinywasm/fmt` for everything else.
+Consumers: `webtyp/components`, `webtyp/layout` (their `//go:build !wasm` `css.go`
+files), `webtyp/ssr` (extracts the stylesheets). Depends on `webtyp/css` for every
+value and on `webtyp/fmt` for everything else.
 
 ---
 
 ## 1. Two packages with opposing constraints
 
 **`widget` (root) travels inside the WASM binary.** Identity, parts, states, cues, kinds.
-Zero style logic, zero emission, and it imports only `tinywasm/fmt` — never
-`tinywasm/css`.
+Zero style logic, zero emission, and it imports only `webtyp/fmt` — never
+`webtyp/css`.
 
 **`widget/style` never reaches the client.** Every file carries `//go:build !wasm`. Scales,
 surfaces, flow primitives and CSS emission live here.
 
 The boundary is enforced by test, not by convention: under `GOOS=js` the dependency graph
-of `github.com/tinywasm/widget` must not contain `widget/style`. Do not add an import that
+of `webtyp.com/widget` must not contain `widget/style`. Do not add an import that
 crosses it, and do not "temporarily" move a symbol to the wrong side — the whole zero
 client cost argument rests on this line.
 
 ## 2. Never invent a value
 
-Every emitted value is a `tinywasm/css` token reference, fallback included. A drift guard
+Every emitted value is a `webtyp/css` token reference, fallback included. A drift guard
 compares each emitted `var()` against the catalog and fails on any mismatch.
 
 - Do not write a `var(--token,#hex)` by hand; call `css.<Token>.Var()`. A hand-written
   fallback silently goes stale the day the token changes.
-- Do not define a `color-mix()` formula here. Deriving a colour is `tinywasm/css`'s job —
+- Do not define a `color-mix()` formula here. Deriving a colour is `webtyp/css`'s job —
   a formula duplicated across consumers is exactly the drift the token catalog exists to
   eliminate. If a step seems to need a new formula, the css side is incomplete: fix it
   there and release it, then come back.
@@ -124,7 +124,7 @@ aliases, no deprecation shims — a single release, with the mapping written dow
 ## Testing
 
 ```bash
-go install github.com/tinywasm/devflow/cmd/gotest@latest   # external agents have no global gotest
+go install webtyp.com/devflow/cmd/gotest@latest   # external agents have no global gotest
 gotest
 ```
 

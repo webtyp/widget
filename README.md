@@ -1,7 +1,7 @@
-# `tinywasm/widget`
+# `webtyp/widget`
 <img src="docs/img/badges.svg">
 
-Visual component contracts, states, layout, and styling for the `tinywasm` suite.
+Visual component contracts, states, layout, and styling for the `webtyp` suite.
 
 ## Usage
 
@@ -9,9 +9,9 @@ Visual component contracts, states, layout, and styling for the `tinywasm` suite
 package main
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 type MasterDetail struct{}

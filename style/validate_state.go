@@ -3,9 +3,9 @@
 package style
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/css"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 // validateStates is the legality half of Validate(): a state that the

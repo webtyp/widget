@@ -3,8 +3,8 @@
 package style
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 // emitWidgets renders `@layer widgets` — the resting look of the root and every

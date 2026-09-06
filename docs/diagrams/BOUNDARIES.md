@@ -5,10 +5,10 @@ Context in [ARCHITECTURE.md §2](../ARCHITECTURE.md#2-position-in-the-suite).
 
 ```mermaid
 flowchart TD
-    A[tinywasm/css<br/>owns VALUES<br/>token catalog, light/dark, contrast test]
-    B[tinywasm/widget<br/>owns DECISIONS<br/>which token, which part, which state]
+    A[webtyp/css<br/>owns VALUES<br/>token catalog, light/dark, contrast test]
+    B[webtyp/widget<br/>owns DECISIONS<br/>which token, which part, which state]
     C[widget/style<br/>emits scoped CSS<br/>var references only, never literals]
-    D[tinywasm/ssr<br/>owns DELIVERY<br/>calls RenderCSS on a zero value]
+    D[webtyp/ssr<br/>owns DELIVERY<br/>calls RenderCSS on a zero value]
     E[merged stylesheet<br/>layer statement hoisted, duplicates merged]
     F[browser<br/>:root declarations resolve every var]
 
@@ -40,7 +40,7 @@ flowchart TD
     B -.->|must never reach| C
 ```
 
-`widget` imports only `tinywasm/fmt`. It must not import `tinywasm/css`, which is
+`widget` imports only `webtyp/fmt`. It must not import `webtyp/css`, which is
 why `Kind.Layer()` returns an enum and `widget/style` maps it to the `--z-*`
 catalog. A test asserts `widget/style` is absent from a consumer's WASM
 dependency graph.

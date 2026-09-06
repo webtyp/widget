@@ -1,6 +1,6 @@
 package widget
 
-import "github.com/tinywasm/fmt"
+import "webtyp.com/fmt"
 
 // Kind is the type of widget according to WAI-ARIA Authoring Practices.
 // It determines the role, valid states, and expected keyboard interactions.

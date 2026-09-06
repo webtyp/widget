@@ -11,13 +11,13 @@ REVIEWER: none
 
 > **Idioma:** este documento está en español porque lo pidió el autor.
 > **El código, los comentarios de código y los nombres de símbolos van SIEMPRE en
-> inglés** — `tinywasm/*` es librería pública. No traduzcas identificadores ni
+> inglés** — `webtyp/*` es librería pública. No traduzcas identificadores ni
 > escribas comentarios en español dentro de los `.go`.
 
 ## Prerrequisito (ejecutar primero)
 
 ```bash
-go install github.com/tinywasm/devflow/cmd/gotest@latest
+go install webtyp.com/devflow/cmd/gotest@latest
 ```
 
 Se ejecuta `gotest` (nunca `go test`) desde la raíz del repo. No invoques
@@ -27,14 +27,14 @@ Se ejecuta `gotest` (nunca `go test`) desde la raíz del repo. No invoques
 
 ## 1. Contexto: por qué falta esta pieza
 
-`tinywasm/widget/style` es el DSL que emite el CSS de todos los componentes del
+`webtyp/widget/style` es el DSL que emite el CSS de todos los componentes del
 ecosistema. Hoy **no existe ninguna forma de rotar un elemento**. Verificable:
 
 ```bash
 grep -rnE "^func (Rotate|Turn|Spin)" style/*.go   # → vacío hoy
 ```
 
-El consumidor concreto que lo necesita es `tinywasm/components/selectsearch`:
+El consumidor concreto que lo necesita es `webtyp/components/selectsearch`:
 su chevron (`▼`) debe girar 180° cuando el desplegable se abre y volver a su
 posición al cerrarse. Ese componente ya tiene el estado (`widget.Open`) y ya
 tiene la parte (`PartIcon`), pero no tiene con qué expresar la rotación.
@@ -202,7 +202,7 @@ que valida Anchor/Docked/OnEdge/Flyout/Backdrop/Drawer — busca el mensaje
 ```
 
 El mensaje va **literal**, entre backticks en el código como constante de
-error formateada con `fmt.Errf` (paquete `github.com/tinywasm/fmt`, ya
+error formateada con `fmt.Errf` (paquete `webtyp.com/fmt`, ya
 importado en ese archivo — **no** el `fmt` estándar).
 
 ## 4. Reglas de calidad obligatorias
@@ -210,7 +210,7 @@ importado en ese archivo — **no** el `fmt` estándar).
 - **Sin strings sueltos en la lógica.** Los valores CSS ya están centralizados
   (`turnValue`); no repitas `"180deg"` en ningún otro sitio.
 - **Sin librería estándar en código compartido con WASM.** Este paquete usa
-  `github.com/tinywasm/fmt`, nunca `errors`/`strconv`/`strings` del stdlib.
+  `webtyp.com/fmt`, nunca `errors`/`strconv`/`strings` del stdlib.
   Comprueba el bloque de imports del archivo antes de escribir.
   *Anti-footgun:* `style/emit_*.go` llevan `//go:build !wasm` y **sí** pueden
   usar `sort` del stdlib — ya lo hacen. No "arregles" esos imports.
@@ -327,5 +327,5 @@ esté publicado: consume `style.Rotate` y `style.TurnHalf`.
 
 Referencias externas (sólo lectura opcional; lo crítico ya está inline):
 
-- Doctrina: <https://github.com/tinywasm/app-releases/blob/main/docs/CONSTRUCTION_HARNESS.md>
-- Consumidor: <https://github.com/tinywasm/components/blob/main/selectsearch/css.go>
+- Doctrina: <https://github.com/webtyp/app-releases/blob/main/docs/CONSTRUCTION_HARNESS.md>
+- Consumidor: <https://github.com/webtyp/components/blob/main/selectsearch/css.go>

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 // Animate paired with RevealedBy on the same rule upgrades the instant

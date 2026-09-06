@@ -3,8 +3,8 @@
 package style
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 func (s *Sheet) Validate() []error {

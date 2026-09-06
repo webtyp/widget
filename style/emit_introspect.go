@@ -5,8 +5,8 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 func (s *Sheet) Parts() []widget.Part {

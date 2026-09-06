@@ -1,4 +1,4 @@
-# Trade-offs — `tinywasm/widget`
+# Trade-offs — `webtyp/widget`
 
 What this architecture buys, what it costs, and what remains unsolved.
 
@@ -94,7 +94,7 @@ one option that accepts a `css.Token` and nothing else:
 func Custom(prop string, t css.Token) Option
 ```
 
-A one-off must then still be declared as a token in `tinywasm/css`, where it is
+A one-off must then still be declared as a token in `webtyp/css`, where it is
 themeable, dark-mode-aware and contrast-tested. The escape stays inside the model.
 
 **Justification.** What matters is not the size of the scale — it is that every
@@ -153,7 +153,7 @@ table is current. The `widget` side of a new family becomes mechanical and
 verified rather than hand-written and forgettable.
 
 **Justification.** The boundary is worth its cost — see
-[DESIGN.md §1](DESIGN.md#1-why-tinywasmcss-stays) — so the answer is to reduce
+[DESIGN.md §1](DESIGN.md#1-why-webtypcss-stays) — so the answer is to reduce
 the friction, not remove the boundary. Generation also closes a drift class
 directly: a hand-written table can disagree with the catalog, and four such
 disagreements exist in the published code.

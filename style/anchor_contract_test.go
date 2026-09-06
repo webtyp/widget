@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
-// The two shapes below are the real ones shipped in tinywasm/components today.
+// The two shapes below are the real ones shipped in webtyp/components today.
 // One works and one is silently broken, and NOTHING in the DSL distinguishes
 // them — that is the defect these tests pin down.
 //

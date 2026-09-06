@@ -5,9 +5,9 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/css"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 // emitStates renders `@layer states` — every rule driven by a written state or

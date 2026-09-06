@@ -5,9 +5,9 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
+	"webtyp.com/css"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
 )
 
 // Stylesheet renders the accumulated sheet into CSS. It is a thin orchestrator:

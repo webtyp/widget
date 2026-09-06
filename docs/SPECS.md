@@ -1,4 +1,4 @@
-# Specification — `tinywasm/widget`
+# Specification — `webtyp/widget`
 
 Strict functional requirements: exact public surface, exact scale mappings, exact
 emitted output, exact failure conditions. Structure and reasoning are not repeated
@@ -113,7 +113,7 @@ layer it does not own. `stackingFor` is the only source of a `z-index` value.
 
 ## 2. Package `widget/style` — scales
 
-All values are `tinywasm/css` token references. No literal may be emitted for any
+All values are `webtyp/css` token references. No literal may be emitted for any
 of these.
 
 ### 2.1 `Space` — 8 steps, 8 distinct tokens
@@ -212,7 +212,7 @@ crossed over a legend riding the same line) and Safari < 16.4 ignores
 
 `Interactive(s)` emits the base surface plus three state rules. The interactive states
 are derived programmatically from the base token of the surface family using functions
-`css.Hover(base)`, `css.Focus(base)`, and `css.Press(base)` defined in `tinywasm/css`.
+`css.Hover(base)`, `css.Focus(base)`, and `css.Press(base)` defined in `webtyp/css`.
 
 | Cue | Selector suffix | Change |
 |---|---|---|
@@ -545,7 +545,7 @@ each. Query strings come from `css.Device.Query()` — never built here.
 ### 7.2 Global invariants
 
 1. Two emissions of the same sheet are byte-identical.
-2. Every `var()` matches a `tinywasm/css` token **including its fallback**.
+2. Every `var()` matches a `webtyp/css` token **including its fallback**.
 3. No `#`, no `rgba(`, no `!important`, no `vw`/`vh` anywhere in the output.
 4. No selector begins with `.fl-` or `.exc-`.
 5. No empty `@layer` block.
@@ -559,8 +559,8 @@ each. Query strings come from `css.Device.Query()` — never built here.
 func (w *T) RenderCSS() *css.Stylesheet
 ```
 
-Called on a zero value (`&T{}`) by `tinywasm/ssr`. It must not read fields, and it
-must be deterministic. See [ARCHITECTURE.md §8](ARCHITECTURE.md#8-contract-with-tinywasmssr).
+Called on a zero value (`&T{}`) by `webtyp/ssr`. It must not read fields, and it
+must be deterministic. See [ARCHITECTURE.md §8](ARCHITECTURE.md#8-contract-with-webtypssr).
 
 ---
 

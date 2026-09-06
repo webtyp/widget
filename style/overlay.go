@@ -2,7 +2,7 @@
 
 package style
 
-import "github.com/tinywasm/widget"
+import "webtyp.com/widget"
 
 // Scope says what an overlay dimensions against.
 type Scope uint8

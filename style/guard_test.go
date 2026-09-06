@@ -3,9 +3,9 @@
 package style_test
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 	"regexp"
 	"strings"
 	"testing"
@@ -198,7 +198,7 @@ func TestNoInventedValues(t *testing.T) {
 		addIfHex(css.PressStatic(tok))
 		// EnhancedVar()/NestedEnhanced() bake BOTH halves of a theme token
 		// as literals (e.g. light-dark(#F2F2F7,#161B22)) — see their doc
-		// comments in tinywasm/css for why a var() reference can't be used
+		// comments in webtyp/css for why a var() reference can't be used
 		// here instead. addIfHex only ever matches a value that IS a bare
 		// hex, so this is harmless for tok.Light/tok.Dark that are actually
 		// live expressions (e.g. "15%", "0.75rem", or a color-mix() string).
@@ -252,10 +252,10 @@ func TestNoInventedValues(t *testing.T) {
 		// We tolerate a bare "var(--name)" call with no local fallback string only when the variable
 		// name is a valid token from the css catalog.
 		// Why this is safe: These matches represent nested variable references within larger formulas
-		// (such as those returned by ColorSurfaceSunken or ColorSelection from tinywasm/css v0.3.3+).
+		// (such as those returned by ColorSurfaceSunken or ColorSelection from webtyp/css v0.3.3+).
 		// Because they are nested inside an outer var() call, they are already protected by the outer
 		// var()'s fallback. Enforcing fallback matching on these nested references is both redundant
-		// and structurally impossible here since the formulas themselves are owned and defined by tinywasm/css.
+		// and structurally impossible here since the formulas themselves are owned and defined by webtyp/css.
 		expectedVarCall := tok.Var()
 		if fullMatch != expectedVarCall && fullMatch != "var("+varName+")" {
 			t.Errorf("Visual drift detected for %q.\nIn stylesheet: %q\nExpected: %q",

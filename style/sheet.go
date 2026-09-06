@@ -3,8 +3,8 @@
 package style
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
+	"webtyp.com/css"
+	"webtyp.com/widget"
 )
 
 // Option is a visual option that configures a rule.

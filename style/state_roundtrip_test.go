@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 // TestStateAttrMatchesEmittedSelector is the round-trip that would have caught

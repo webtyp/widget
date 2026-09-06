@@ -3,9 +3,9 @@
 package main
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/fmt"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 type MyWidget struct{}

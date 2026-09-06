@@ -1,4 +1,4 @@
-# Architecture of `tinywasm/widget`
+# Architecture of `webtyp/widget`
 
 Defines the **what** and **why** of visual contracts, anatomy, states, layout, and
 the style system. Abstract structure only — exact values, signatures and emission
@@ -7,7 +7,7 @@ alternatives rejected live in [DESIGN.md](DESIGN.md).
 
 ---
 
-## 1. What `tinywasm/widget` is
+## 1. What `webtyp/widget` is
 
 The module governing the **structure** of visual components. It names the pieces a
 component is made of, the states it can occupy, and how those pieces are laid
@@ -26,18 +26,18 @@ Three modules divide one problem. The boundary is what keeps each of them small.
 
 | Module | Owns | Never does |
 |---|---|---|
-| `tinywasm/css` | **Values** — what a colour, space, duration or z-level *is*; light/dark switching; contrast guarantees | Know anything about components |
-| `tinywasm/widget` | **Decisions** — which token applies to which part, in which state | Invent a value |
-| `tinywasm/ssr` | **Delivery** — collect the sheets actually used, order and deduplicate them | Know what a widget is |
+| `webtyp/css` | **Values** — what a colour, space, duration or z-level *is*; light/dark switching; contrast guarantees | Know anything about components |
+| `webtyp/widget` | **Decisions** — which token applies to which part, in which state | Invent a value |
+| `webtyp/ssr` | **Delivery** — collect the sheets actually used, order and deduplicate them | Know what a widget is |
 
 See [diagrams/BOUNDARIES.md](diagrams/BOUNDARIES.md).
 
-`tinywasm/css` is a hard dependency and is meant to stay one. This module emits
+`webtyp/css` is a hard dependency and is meant to stay one. This module emits
 *references* (`var(--color-primary, …)`); something must declare those variables
 and switch them for dark mode, and that is `css`. More importantly, `css` owns the
 contrast guarantee across the palette — which is what makes a surface safe to hand
 to an author who cannot evaluate contrast themselves. Rationale in
-[DESIGN.md §1](DESIGN.md#1-why-tinywasmcss-stays).
+[DESIGN.md §1](DESIGN.md#1-why-webtypcss-stays).
 
 ---
 
@@ -45,11 +45,11 @@ to an author who cannot evaluate contrast themselves. Rationale in
 
 Two packages with opposing constraints.
 
-**`github.com/tinywasm/widget` (root, WASM-compatible).** Identity, anatomy,
+**`webtyp.com/widget` (root, WASM-compatible).** Identity, anatomy,
 states, browser cues, ARIA kinds. It **travels inside the WASM binary**, so it
 carries zero style logic and zero emission.
 
-**`github.com/tinywasm/widget/style` (stylesheet engine, WASM-exempt).** Closed
+**`webtyp.com/widget/style` (stylesheet engine, WASM-exempt).** Closed
 scales, surfaces, flow primitives, and deterministic CSS emission. Excluded from
 WebAssembly by `//go:build !wasm` so it can never reach the client binary. This is
 enforced by test, not by convention.
@@ -146,7 +146,7 @@ is deliberate:
 > **A component responds to its own width. The application shell responds to the
 > viewport.**
 
-Shell-level decisions belong in application CSS, where `tinywasm/css` already
+Shell-level decisions belong in application CSS, where `webtyp/css` already
 publishes `--bp-sm` through `--bp-xl`. Admitting the escape at component level
 would reintroduce exactly the bug intrinsic sizing avoids: a component that
 reacts to the viewport is unusable inside a sidebar.
@@ -214,7 +214,7 @@ to stay silent without it.
 
 ---
 
-## 8. Contract with `tinywasm/ssr`
+## 8. Contract with `webtyp/ssr`
 
 `ssr` compiles a generated program that instantiates a component as a **zero
 value** and calls a provider method matched **by name**. For CSS that method is

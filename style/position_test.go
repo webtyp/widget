@@ -3,9 +3,9 @@
 package style_test
 
 import (
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/widget"
-	"github.com/tinywasm/widget/style"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 	"strings"
 	"testing"
 )
@@ -288,7 +288,7 @@ func TestValidateDrawerWithoutRevealedBy(t *testing.T) {
 }
 
 // TestPrimarySurface_GradientHookIsInertByDefaultAndLiveWhenSet is the
-// consumer-shaped proof for css.SetGradient (tinywasm/css) and the
+// consumer-shaped proof for css.SetGradient (webtyp/css) and the
 // background-image line it depends on (style/emit_decls.go): a Primary
 // surface always emits the hook, it costs nothing when no app opts in, and
 // when an app's own Theme() call sets it, the SAME rule's output carries it

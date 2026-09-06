@@ -5,8 +5,8 @@ package style
 import (
 	"sort"
 
-	"github.com/tinywasm/css"
-	"github.com/tinywasm/fmt"
+	"webtyp.com/css"
+	"webtyp.com/fmt"
 )
 
 // flowSelfDecls returns the declarations a flow puts on the CONTAINER itself,
@@ -131,7 +131,7 @@ func startingStyleBlock(sels []string) string {
 }
 
 // autoRotateStepSeconds is how long one layer holds the screen before the
-// next takes over. Not a token: tinywasm/css's duration scale (150-400ms) is
+// next takes over. Not a token: webtyp/css's duration scale (150-400ms) is
 // for UI transitions, and an unattended background rotation runs one to two
 // orders of magnitude slower than that — there is nothing in the catalog to
 // reuse here, so this is a fixed implementation constant of AutoRotate, the
