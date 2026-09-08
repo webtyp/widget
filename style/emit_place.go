@@ -88,6 +88,7 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 
 	if r.controlBox {
 		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
+		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 	}
 
 	if r.logoBox {

@@ -125,7 +125,11 @@ func (k Kind) Allows(s State) bool {
 	case Combobox:
 		return s == Open || s == Selected || s == Invalid
 	case Form:
-		return s == Invalid // Busy is already covered by universal set
+		// A form with a conditional section: an "other, please specify" box, a
+		// panel revealed by a choice. Open is the same reveal a Disclosure
+		// carries; a Form that also holds Invalid must not have to give it up
+		// to get it. Busy is already covered by the universal set.
+		return s == Invalid || s == Open
 	default:
 		return false
 	}

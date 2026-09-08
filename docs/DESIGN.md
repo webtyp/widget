@@ -440,7 +440,9 @@ This does not weaken the architecture's claim of *class* agreement by constructi
 (§P-2 in TRADEOFFS.md). Classes are derived from `Name` and `Part`, which are
 compile-time identifiers; state attributes are runtime choices the component makes,
 and the only mechanical check is `Kind.Allows()`, which says a state *may* be used,
-not that it *is*.
+not that it *is*. A `Form` holds `Open` alongside `Invalid`: a form with a
+conditional section — an "other, please specify" box, a panel revealed by a choice
+— is ordinary, and it must not surrender its validation state to get the reveal.
 
 ## 18. Why a state never changes the box size
 
