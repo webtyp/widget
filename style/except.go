@@ -113,6 +113,24 @@ func Hide() Option {
 	}
 }
 
+// VisuallyHidden removes the element from sight while leaving it in the
+// accessibility tree and in the tab order — the opposite trade to Hide(), which
+// removes it from both.
+//
+// Its use is the native control a component skins: a checkbox or radio whose
+// own appearance cannot be styled, paired with a <label for> carrying the
+// visible pill. The input stays the real control — it keeps focus, keyboard
+// toggling and the screen reader's announcement — and the label is what the eye
+// sees. Hide() cannot express that: display:none takes the input out of the tab
+// order, so the control becomes unreachable by keyboard.
+//
+// To hide something nobody needs to reach, that is Hide().
+func VisuallyHidden() Option {
+	return func(r *rule) {
+		r.visuallyHidden = true
+	}
+}
+
 // Show puts back an element that the base rule hid. It is Hide()'s missing
 // counterpart, and it is for a STATE rule: a control that swaps one glyph for
 // another — a hamburger becoming a close cross — hides the inactive one by

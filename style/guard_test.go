@@ -3,12 +3,12 @@
 package style_test
 
 import (
-	"webtyp.com/css"
-	"webtyp.com/widget"
-	"webtyp.com/widget/style"
 	"regexp"
 	"strings"
 	"testing"
+	"webtyp.com/css"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 func extractVarCalls(cssStr string) [][2]string {

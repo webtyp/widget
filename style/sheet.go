@@ -43,6 +43,7 @@ type rule struct {
 	logoBox        bool
 	chipBox        bool
 	buttonBox      bool
+	visuallyHidden bool
 	hasInteractive bool
 	capitalize     bool
 

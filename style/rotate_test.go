@@ -3,10 +3,10 @@
 package style_test
 
 import (
-	"webtyp.com/widget"
-	"webtyp.com/widget/style"
 	"strings"
 	"testing"
+	"webtyp.com/widget"
+	"webtyp.com/widget/style"
 )
 
 func TestRotateTurnsOnState(t *testing.T) {

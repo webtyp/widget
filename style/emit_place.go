@@ -91,6 +91,21 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 	}
 
+	if r.visuallyHidden {
+		// The standard visually-hidden recipe (Bootstrap's .visually-hidden,
+		// Tailwind's sr-only): collapsed to a clipped 1px box rather than
+		// display:none, which is what keeps it focusable and announced.
+		decls = append(decls, "position: absolute;")
+		decls = append(decls, "width: 1px;")
+		decls = append(decls, "height: 1px;")
+		decls = append(decls, "margin: -1px;")
+		decls = append(decls, "padding: 0;")
+		decls = append(decls, "border: 0;")
+		decls = append(decls, "overflow: hidden;")
+		decls = append(decls, "clip-path: inset(50%);")
+		decls = append(decls, "white-space: nowrap;")
+	}
+
 	if r.buttonBox {
 		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
 		decls = append(decls, "padding-inline: "+css.Space3.Var()+";")

@@ -19,13 +19,13 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	// containing blocks, so the Anchor is redundant as well as destructive.
 	checkPosition := func(p widget.Part, r rule) {
 		n := 0
-		for _, on := range []bool{r.hasAnchor, r.hasDocked, r.hasOnEdge, r.hasFlyout, r.hasBackdrop, r.hasDrawer, r.hasEdgeStrip, r.hasFloatMiddle} {
+		for _, on := range []bool{r.hasAnchor, r.hasDocked, r.hasOnEdge, r.hasFlyout, r.hasBackdrop, r.hasDrawer, r.hasEdgeStrip, r.hasFloatMiddle, r.visuallyHidden} {
 			if on {
 				n++
 			}
 		}
 		if n > 1 {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: Anchor/Docked/OnEdge/Flyout/Backdrop/Drawer/EdgeStrip/FloatMiddle all set position; use one", string(s.widget.WidgetName()), string(p)))
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Anchor/Docked/OnEdge/Flyout/Backdrop/Drawer/EdgeStrip/FloatMiddle/VisuallyHidden all set position; use one", string(s.widget.WidgetName()), string(p)))
 		}
 		if r.hasRotate && (r.hasOnEdge || r.hasDrawer || r.hasFloatMiddle) {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
@@ -35,6 +35,15 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	// either again is not additive: the second Interactive silently overwrites
 	// the surface Button chose, and a second min-height from the same token
 	// reads as if it did something.
+	// Hide() removes the element from the accessibility tree; VisuallyHidden()
+	// exists to keep it there. Asking for both says nothing coherent, and
+	// display:none wins — silently costing the keyboard access the author asked
+	// for by writing VisuallyHidden in the first place.
+	checkHidden := func(p widget.Part, r rule) {
+		if r.visuallyHidden && r.hidden {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Hide and VisuallyHidden contradict; Hide drops it from the tab order, VisuallyHidden keeps it", string(s.widget.WidgetName()), string(p)))
+		}
+	}
 	checkButton := func(p widget.Part, r rule) {
 		if !r.buttonBox {
 			return
@@ -259,9 +268,11 @@ func (s *Sheet) validateComposition(errs []error) []error {
 
 	checkPosition("", s.rootRule)
 	checkButton("", s.rootRule)
+	checkHidden("", s.rootRule)
 	for p, pr := range s.partRules {
 		checkPosition(p, pr)
 		checkButton(p, pr)
+		checkHidden(p, pr)
 	}
 	for k, dr := range s.deviceRules {
 		checkPosition(k.part, dr)

@@ -3,11 +3,11 @@
 package style_test
 
 import (
+	"strings"
+	"testing"
 	"webtyp.com/css"
 	"webtyp.com/widget"
 	"webtyp.com/widget/style"
-	"strings"
-	"testing"
 )
 
 func TestGlyphTintsWithoutFilling(t *testing.T) {
