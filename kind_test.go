@@ -2,22 +2,22 @@ package widget
 
 import "testing"
 
-// A Form holds Invalid AND Open: a form with a conditional section is
-// ordinary, and it must not surrender its validation state to get the reveal.
-func TestFormAllowsInvalidAndOpen(t *testing.T) {
-	for _, s := range []State{Invalid, Open} {
+// A Form holds Invalid, Open AND Selected: a form with a conditional section
+// and a set of chips is ordinary, and it must not surrender its validation
+// state to get either.
+func TestFormAllowsInvalidOpenAndSelected(t *testing.T) {
+	for _, s := range []State{Invalid, Open, Selected} {
 		if !Form.Allows(s) {
 			t.Errorf("Form.Allows(%s) = false, want true", s.String())
 		}
 	}
 }
 
-// Widening Form must not widen anything else: Selected and Current stay out.
-func TestFormStillRejectsSelectionStates(t *testing.T) {
-	for _, s := range []State{Selected, Current} {
-		if Form.Allows(s) {
-			t.Errorf("Form.Allows(%s) = true, want false", s.String())
-		}
+// Widening Form must not widen everything: Current stays out. It means "the
+// one you are on" in a navigation, which a form has no notion of.
+func TestFormStillRejectsCurrent(t *testing.T) {
+	if Form.Allows(Current) {
+		t.Error("Form.Allows(Current) = true, want false")
 	}
 }
 

@@ -129,7 +129,13 @@ func (k Kind) Allows(s State) bool {
 		// panel revealed by a choice. Open is the same reveal a Disclosure
 		// carries; a Form that also holds Invalid must not have to give it up
 		// to get it. Busy is already covered by the universal set.
-		return s == Invalid || s == Open
+		//
+		// Selected is the same widening, one control down: a form routinely
+		// holds a set of chips or toggles where one member is chosen — a day
+		// picker, a set of filters. That is the state Listbox already carries,
+		// and re-declaring the whole form a Listbox to get it would cost it
+		// Invalid and Open, which the same stylesheet is already using.
+		return s == Invalid || s == Open || s == Selected
 	default:
 		return false
 	}
