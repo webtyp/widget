@@ -31,6 +31,21 @@ func (s *Sheet) validateComposition(errs []error) []error {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
 		}
 	}
+	// Button already paints and already claims the control height. Saying
+	// either again is not additive: the second Interactive silently overwrites
+	// the surface Button chose, and a second min-height from the same token
+	// reads as if it did something.
+	checkButton := func(p widget.Part, r rule) {
+		if !r.buttonBox {
+			return
+		}
+		if r.hasInteractive {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Button already paints an interactive surface; drop Interactive", string(s.widget.WidgetName()), string(p)))
+		}
+		if r.controlBox {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Button already carries the control height; drop ControlBox", string(s.widget.WidgetName()), string(p)))
+		}
+	}
 	// Both ends of a descendant rule have to exist, or it silently styles
 	// nothing. CueWithinHover carries the same obligation.
 	checkCueWithin := func(method string, k cueWithinKey) {
@@ -243,8 +258,10 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	}
 
 	checkPosition("", s.rootRule)
+	checkButton("", s.rootRule)
 	for p, pr := range s.partRules {
 		checkPosition(p, pr)
+		checkButton(p, pr)
 	}
 	for k, dr := range s.deviceRules {
 		checkPosition(k.part, dr)

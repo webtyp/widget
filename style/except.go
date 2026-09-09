@@ -147,6 +147,30 @@ func ControlBox() Option {
 	}
 }
 
+// Button is the one recipe for a button: the shared control height, inline
+// padding for its label, and a box that neither stretches to its container nor
+// shrinks under pressure. s paints it — Primary, Secondary, Danger, Subtle —
+// with the hover, focus and press treatments Interactive derives, and with that
+// surface's default radius.
+//
+// It exists because the parts are not safely composable by hand. KeepSize()
+// looks like the way to stop a button filling its panel and is not: it emits
+// flex-shrink/flex-grow, which govern the MAIN axis, while a button inside a
+// Stack is stretched across the CROSS axis by align-items: stretch. Every
+// component that composed its own button reached a different answer, and one of
+// them shipped an 800px-wide "Add row" bar.
+//
+// Use it for anything the user presses: a button, a summary that acts as one.
+// Not for an interactive surface that is not a button — a clickable table row
+// or a calendar day keeps Interactive(), which paints without claiming a
+// control's box.
+func Button(s Surface) Option {
+	return func(r *rule) {
+		r.hasSurface, r.surface, r.interactive = true, s, true
+		r.buttonBox = true
+	}
+}
+
 // LogoBox caps a media element to the shared control height, width auto to
 // preserve whatever aspect ratio the source art has. A brand mark's file —
 // often an SVG traced from artwork with no relationship to a nav row's

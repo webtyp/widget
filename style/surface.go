@@ -218,5 +218,6 @@ func (s Surface) defaultRadius() Radius {
 func Interactive(s Surface) Option {
 	return func(r *rule) {
 		r.hasSurface, r.surface, r.interactive = true, s, true
+		r.hasInteractive = true
 	}
 }

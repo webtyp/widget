@@ -37,12 +37,14 @@ type rule struct {
 	meterThickness Space
 	centerSelf     bool
 
-	centerContent bool
-	startContent  bool
-	controlBox    bool
-	logoBox       bool
-	chipBox       bool
-	capitalize    bool
+	centerContent  bool
+	startContent   bool
+	controlBox     bool
+	logoBox        bool
+	chipBox        bool
+	buttonBox      bool
+	hasInteractive bool
+	capitalize     bool
 
 	hasGlyph bool
 	glyph    Surface

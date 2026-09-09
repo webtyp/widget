@@ -10,7 +10,7 @@ import (
 // placementDecls emits the declarations that take the element out of the
 // flow and position it against its containing block — Backdrop, Veil,
 // Drawer, Anchor, Docked, EdgeStrip, OnEdge, Flyout — together with the
-// self-alignment flags that sit among them (Glyph, ChipBox, ControlBox,
+// self-alignment flags that sit among them (Glyph, ChipBox, ControlBox, Button,
 // CenterContent, StartContent, Meter, CenterSelf). The sequence is part of
 // the byte-identical contract: the CSS engine breaks equal-specificity
 // ties by source order, so these blocks run in the order they appear and
@@ -89,6 +89,17 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 	if r.controlBox {
 		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
+	}
+
+	if r.buttonBox {
+		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
+		decls = append(decls, "padding-inline: "+css.Space3.Var()+";")
+		// The 799px fix: flex-shrink/grow govern the MAIN axis, and a button
+		// inside a Stack is stretched across the CROSS one by the default
+		// align-items: stretch. Any align-self but stretch takes content width.
+		decls = append(decls, "align-self: center;")
+		decls = append(decls, "flex-shrink: 0;")
+		decls = append(decls, "flex-grow: 0;")
 	}
 
 	if r.logoBox {
