@@ -91,6 +91,20 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 	}
 
+	// The cap: a --control-height square that never shrinks and centres its
+	// glyph. aspect-ratio (not a second explicit dimension) is what keeps it
+	// square when the row it sits in grows taller than one control — the same
+	// reason searchbar's PartIcon reached for MediaBox by hand. The glyph's
+	// own size is emitted as a child rule, in emit_primitives.go.
+	if r.iconCap {
+		decls = append(decls, "aspect-ratio: 1;")
+		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
+		decls = append(decls, "flex-shrink: 0;")
+		decls = append(decls, "display: flex;")
+		decls = append(decls, "align-items: center;")
+		decls = append(decls, "justify-content: center;")
+	}
+
 	if r.visuallyHidden {
 		// The standard visually-hidden recipe (Bootstrap's .visually-hidden,
 		// Tailwind's sr-only): collapsed to a clipped 1px box rather than

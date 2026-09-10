@@ -168,8 +168,8 @@ func ControlBox() Option {
 // Button is the one recipe for a button: the shared control height, inline
 // padding for its label, and a box that neither stretches to its container nor
 // shrinks under pressure. s paints it — Primary, Secondary, Danger, Subtle —
-// with the hover, focus and press treatments Interactive derives, and with that
-// surface's default radius.
+// with the hover, focus and press treatments derived from that same family,
+// and with that surface's default radius.
 //
 // It exists because the parts are not safely composable by hand. KeepSize()
 // looks like the way to stop a button filling its panel and is not: it emits
@@ -184,7 +184,8 @@ func ControlBox() Option {
 // control's box.
 func Button(s Surface) Option {
 	return func(r *rule) {
-		r.hasSurface, r.surface, r.interactive = true, s, true
+		r.hasSurface, r.surface = true, s
+		r.interactive, r.interactiveFamily = true, s
 		r.buttonBox = true
 	}
 }
@@ -200,6 +201,36 @@ func Button(s Surface) Option {
 func LogoBox() Option {
 	return func(r *rule) {
 		r.logoBox = true
+	}
+}
+
+// IconCap is the one recipe for a glyph's square cap — the filled square at
+// the head of a searchbar, a selectsearch header, a calendarslider field. It
+// makes the part a --control-height square that never shrinks and centres what
+// it holds, AND it sizes the glyph inside it: the cap emits its own
+// `> svg { width: 50%; height: 50% }`, so the glyph is half the cap and is not
+// a per-component decision at all.
+//
+// It exists for the reason Button() does: the parts are not safely composable
+// by hand. Three components wrote the same four options for the cap
+// (As + MediaBox(AspectSquare) + ControlBox + KeepSize) and then answered the
+// glyph question three different ways inside an identical 50px square —
+// IconBox(IconSm) 16px, IconBox(IconMd) 24px, and IconBox(IconLg)+FontSize
+// 50px, which filled the cap edge to edge.
+//
+// Half the cap, not an IconSize step, because IconSize is relative to the
+// FONT (1.5em, 2.5em) while a cap is sized off --control-height: the two
+// scales are unrelated, so pinning a glyph to the font inside a box measured
+// in control heights is what let them drift. A percentage of the cap tracks
+// --control-height for free and needs no font-size on the glyph at all.
+//
+// Pair it with As() for the colour — IconCap owns geometry only, and the
+// glyph inherits the cap's text colour through currentColor. A part that
+// needs a class of its own for some OTHER reason (selectsearch rotates its
+// glyph on open) still declares one; it just must not re-declare IconBox.
+func IconCap() Option {
+	return func(r *rule) {
+		r.iconCap = true
 	}
 }
 

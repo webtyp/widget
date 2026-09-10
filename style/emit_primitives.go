@@ -25,6 +25,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 	var slideDeckInfos []slideDeckInfo
 
 	var fillSel, growSel, pushEndSel, scrollSel, keepSizeSel, edgeToEdgeSel, hideOverflowSel []string
+	var iconCapSel []string
 	var dividerStartSel, dividerEndSel, dividerBelowSel, dividerBetweenSel []string
 
 	type scrollGutterInfo struct {
@@ -65,6 +66,9 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 			case flowMasterDetail:
 				masterDetailInfos = append(masterDetailInfos, masterDetailInfo{sel: sel, detail: r.flowDetail})
 			}
+		}
+		if r.iconCap {
+			iconCapSel = append(iconCapSel, sel)
 		}
 		if r.fill {
 			fillSel = append(fillSel, sel)
@@ -224,6 +228,25 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 			"width: 100%;",
 			"height: 100%;",
 			"object-fit: cover;",
+		})
+	}
+
+	// The glyph is half its cap. Emitted BY THE CAP, as a child rule, so a
+	// component cannot answer the question differently — the bug this recipe
+	// exists to make unrepresentable. 50% of --control-height, not an
+	// IconSize step: IconSize is relative to the font (1.5em, 2.5em) and a cap
+	// is measured in control heights, so a font-relative glyph inside it
+	// drifts the moment either scale moves. Same shape as MediaBox's
+	// `> img, > video` rule above.
+	if len(iconCapSel) > 0 {
+		var iconCapKids []string
+		for _, sel := range iconCapSel {
+			iconCapKids = append(iconCapKids, sel+" > svg")
+		}
+		emitPrimitive(iconCapKids, []string{
+			"width: 50%;",
+			"height: 50%;",
+			"flex-shrink: 0;",
 		})
 	}
 

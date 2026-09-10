@@ -24,7 +24,7 @@ func (m *MasterDetail) Style() *style.Sheet {
 		Root(style.Grid(style.ColumnNarrow, style.Space2), style.As(style.Page), style.Scroll()).
 		Part("master", style.Stack(style.Space1), style.As(style.Panel), style.Pad(style.Space3)).
 		Part("detail", style.Stack(style.Space2), style.As(style.Panel), style.Pad(style.Space3)).
-		Part("item",   style.Row(style.Space1),   style.Interactive(style.Subtle)).
+		Part("item",   style.Row(style.Space1),   style.As(style.Subtle), style.Interactive(style.Subtle)).
 		When(widget.Selected, "item", style.As(style.Highlight))
 }
 

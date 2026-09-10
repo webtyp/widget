@@ -214,10 +214,14 @@ func (s Surface) defaultRadius() Radius {
 	}
 }
 
-// Interactive applies s and derives its hover, focus, and press treatments.
+// Interactive declares the family the hover, focus, and press treatments
+// derive from. It does NOT paint the resting surface: pair it with As() for
+// the resting look — As(Subtle) + Interactive(Page) is "resting apagado,
+// estados de la familia Page". A rule with Interactive and no As has states
+// but no resting background, by construction rather than by accident.
 func Interactive(s Surface) Option {
 	return func(r *rule) {
-		r.hasSurface, r.surface, r.interactive = true, s, true
+		r.interactive, r.interactiveFamily = true, s
 		r.hasInteractive = true
 	}
 }

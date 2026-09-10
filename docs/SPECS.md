@@ -210,9 +210,14 @@ crossed over a legend riding the same line) and Safari < 16.4 ignores
 
 ### 3.1 Interaction families
 
-`Interactive(s)` emits the base surface plus three state rules. The interactive states
-are derived programmatically from the base token of the surface family using functions
-`css.Hover(base)`, `css.Focus(base)`, and `css.Press(base)` defined in `webtyp/css`.
+`Interactive(s)` declares the family the three state rules derive from — it
+emits `cursor: pointer` plus the state rules, never the resting paint. The
+resting look is `As()`'s own decision: `As(Subtle) + Interactive(Page)` rests
+apagado and derives its states from the Page family. A rule with
+`Interactive` and no `As` has states but no resting background, by
+construction. The states derive programmatically from the base token of the
+family using functions `css.Hover(base)`, `css.Focus(base)`, and
+`css.Press(base)` defined in `webtyp/css`.
 
 | Cue | Selector suffix | Change |
 |---|---|---|
@@ -220,20 +225,27 @@ are derived programmatically from the base token of the surface family using fun
 | focus | `:focus-visible` | background → `css.Focus(base)` |
 | press | `:active` | background → `css.Press(base)` |
 
+A `Subtle` resting surface keeps muted text at rest and repaints it to
+on-surface inside the three states: muted text on the derived family
+backgrounds measured 1.42:1 on hover, on-surface text measures 9.68:1.
+`Subtle`'s family base is the neutral surface token, never the muted text
+token.
+
 ### 3.2 Which surfaces accept `Interactive`
 
 | Surface | `Interactive` | Why |
 |---|---|---|
 | `Panel`, `Inset`, `Primary`, `Secondary`, `Highlight`, `Success`, `Danger`, `Subtle` | yes | can be a control or a selectable row |
-| `Page` | no | the page background is not a control |
+| `Page` | yes | the whitest surface: a white base deriving its own hover/focus/press family |
 | `Inactive` | no | it *is* the non-interactive state; deriving a hover from it is a contradiction |
 
-`Interactive(Page)` and `Interactive(Inactive)` are reported by `Validate()`
+`Interactive(Inactive)` is reported by `Validate()`
 (§6.1). This is the eight-family set the private `--color-<family>-*` tokens must
 cover — 24 tokens, not 27.
 
-**Invariant:** it is not expressible to combine one family's base with another
-family's interaction state.
+**Invariant:** resting surface and interaction family are separate decisions —
+`As()` paints, `Interactive()` derives. One intent ("resting Y, family X") is
+exactly one path: `As(Y) + Interactive(X)`.
 
 ---
 
@@ -469,7 +481,12 @@ declared (or the composition corrected).
 | A declared part produces no declarations | `sheet <name>: part "<part>" emits nothing` |
 | `Veil()` without `Backdrop()` on the same rule | `sheet <name>: Veil() requires Backdrop()` |
 | `When` uses a state `Kind.Allows` rejects | `sheet <name>: state <state> is not meaningful for kind <kind>` |
-| `Interactive()` on `Page` or `Inactive` (§3.2) | `sheet <name>: surface <surface> has no interaction states` |
+| `Interactive()` on `Inactive` (§3.2) | `sheet <name>: surface <surface> has no interaction states` |
+| `Button()` with `Interactive()` | `sheet <name>: part "<part>": Button already paints an interactive surface; drop Interactive` |
+| `Button()` with `ControlBox()` | `sheet <name>: part "<part>": Button already carries the control height; drop ControlBox` |
+| `IconCap()` with `IconBox()` on the same part | `sheet <name>: part "<part>": IconCap already sizes the glyph; drop IconBox` |
+| `IconBox()` on a part nested under an `IconCap()` part | `sheet <name>: part "<part>": IconBox under IconCap part "<cap>" is silently overridden by the cap's glyph rule; drop IconBox` |
+| `MediaBox(AspectSquare)` with `ControlBox()` (not a `StartContent` text block) | `sheet <name>: part "<part>": hand-rolled icon cap (MediaBox(AspectSquare) + ControlBox); use IconCap()` |
 | `On()` names a part never declared with `Part()` | `sheet <name>: device rule for undeclared part "<part>"` |
 | An `On()` rule emits nothing | `sheet <name>: device rule for part "<part>" on <device> emits nothing` |
 | `Drawer()` and `Backdrop()` on the same rule | `sheet <name>: part "<part>": Drawer() and Backdrop() both set position; use one` |

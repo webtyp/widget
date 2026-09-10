@@ -147,6 +147,51 @@ func TestIconBoxEmitsSquareThatCannotShrink(t *testing.T) {
 	}
 }
 
+// TestIconCapSizesItsOwnGlyph is the regression this recipe exists for. Three
+// components hand-composed the same cap and then answered the glyph question
+// three different ways inside an identical 50px square (16px, 24px, and one
+// that filled it edge to edge). The cap now emits the glyph rule itself, so
+// there is nothing left for a component to answer.
+func TestIconCapSizesItsOwnGlyph(t *testing.T) {
+	w := testWidget{name: "shell", kind: widget.Region}
+	s := style.For(w).
+		Part("cap", style.As(style.Primary), style.IconCap()).
+		Stylesheet().String()
+
+	for _, want := range []string{
+		"aspect-ratio: 1;",
+		"min-height: var(--control-height",
+		"flex-shrink: 0;",
+	} {
+		if !strings.Contains(s, want) {
+			t.Errorf("expected IconCap to emit %q, got:\n%s", want, s)
+		}
+	}
+
+	// The glyph rule is the point: it hangs off the CAP's selector, so a
+	// component cannot size the glyph independently of the box holding it.
+	if !strings.Contains(s, ".shell__cap > svg") {
+		t.Errorf("IconCap must size its own glyph via a child rule, got:\n%s", s)
+	}
+	kid := s[strings.Index(s, ".shell__cap > svg"):]
+	if end := strings.Index(kid, "}"); end >= 0 {
+		kid = kid[:end]
+	}
+	for _, want := range []string{"width: 50%;", "height: 50%;"} {
+		if !strings.Contains(kid, want) {
+			t.Errorf("the glyph should be half its cap (%q), got:\n%s", want, kid)
+		}
+	}
+
+	// Half the CAP, never a font-relative IconSize step: the two scales are
+	// unrelated, and pinning the glyph to the font is what let them drift.
+	for _, banned := range []string{"1em", "1.5em", "2.5em"} {
+		if strings.Contains(kid, banned) {
+			t.Errorf("the cap's glyph must not be font-relative (%q), got:\n%s", banned, kid)
+		}
+	}
+}
+
 func TestGrowClaimsWidthWithoutHeight(t *testing.T) {
 	// Fill() also emits height: 100%, which inside a Row resolves against the
 	// row and stretches the part into a full-height block. Grow() must not.

@@ -139,14 +139,26 @@ func (s *Sheet) emitStates(sb *fmt.Conv, parts []widget.Part) (hoverCues []cueEm
 	// source order regardless of which one the author meant to show.
 	addInteractive := func(p widget.Part, r rule) {
 		if r.interactive {
-			base := familyBase(r.surface)
+			base := familyBase(r.interactiveFamily)
 			if base.Name != "" {
+				// A Subtle resting surface keeps muted text at rest, but the
+				// derived state backgrounds are family colours: muted text on
+				// them falls below AA (measured 1.42:1 on hover). The states
+				// therefore repaint the text to on-surface, reaching 9.68:1.
+				subtleText := []string(nil)
+				if r.hasSurface && r.surface == Subtle {
+					subtleText = []string{
+						"color: " + css.ColorOnSurface.LightValue() + ";",
+						"color: " + css.ColorOnSurface.EnhancedVar() + ";",
+					}
+				}
 				kHover := cueKey{cue: widget.Hover, part: p}
 				if len(cueDecls[kHover]) == 0 {
 					cueDecls[kHover] = append(cueDecls[kHover],
 						"background-color: "+css.HoverStatic(base)+";",
 						"background-color: "+css.Hover(base)+";",
 					)
+					cueDecls[kHover] = append(cueDecls[kHover], subtleText...)
 				}
 
 				kFocus := cueKey{cue: widget.Focus, part: p}
@@ -155,6 +167,7 @@ func (s *Sheet) emitStates(sb *fmt.Conv, parts []widget.Part) (hoverCues []cueEm
 						"background-color: "+css.FocusStatic(base)+";",
 						"background-color: "+css.Focus(base)+";",
 					)
+					cueDecls[kFocus] = append(cueDecls[kFocus], subtleText...)
 				}
 
 				kPress := cueKey{cue: widget.Press, part: p}
@@ -163,6 +176,7 @@ func (s *Sheet) emitStates(sb *fmt.Conv, parts []widget.Part) (hoverCues []cueEm
 						"background-color: "+css.PressStatic(base)+";",
 						"background-color: "+css.Press(base)+";",
 					)
+					cueDecls[kPress] = append(cueDecls[kPress], subtleText...)
 				}
 			}
 		}

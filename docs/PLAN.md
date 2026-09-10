@@ -326,3 +326,321 @@ and the existing determinism tests already own that contract.
 | 3 | Emission | `style/emit_place.go`, `style/emit_decls.go` | five declarations emitted; exists-check updated |
 | 4 | Validation | `style/validate_composition.go` | both contradictions rejected with the verbatim messages |
 | 5 | Tests | `style/button_test.go` | four cases, `gotest` green |
+
+---
+
+# Registro — lo que siguió a `Button`, en el mismo hilo
+
+`Button` (§1-§10, shipped `v0.6.26`) arregló los botones, pero la vista que
+motivó el plan seguía sin ser usable: sus selectores de día eran checkboxes
+nativos. Dos ampliaciones más de este paquete lo cerraron. Ambas se ejecutaron
+en local y se publicaron; se registran aquí porque el repo no debe tener un
+símbolo público sin la razón que lo justifica.
+
+## A. `style.VisuallyHidden()` — `v0.6.27`
+
+**El defecto.** Un componente que quiere pintar un checkbox nativo no podía: el
+input trae su propia piel y no se estiliza, y la única forma de sacarlo de la
+vista era `Hide()`, que lo saca **también** del orden de tabulación y del árbol
+de accesibilidad. La elección era entre feo y accesible, y
+`grep -rn 'clip\|sr-only\|visually' style/` no devolvía nada.
+
+**Design gate.** *Prior art:* `.visually-hidden` de Bootstrap 5, `sr-only` de
+Tailwind, `.cdk-visually-hidden` de Angular Material — el patrón tiene nombre
+estable en todos, y `VisuallyHidden` es literalmente el de Bootstrap; inventar
+otro costaría una búsqueda por cero ganancia. *Ledger:* +1 concepto, +1 símbolo;
+**−1 forma de hacerlo mal** (el emparejamiento input-oculto/label-pastilla deja
+de exigir elegir entre accesibilidad y estética). *Dónde:* `widget/style`, junto
+a `Hide()`/`Show()`, que es la familia de la que es el complemento. *Qué borra:*
+nada — capacidad nueva, y el plan lo dice en vez de fingir lo contrario.
+
+**Emisión:** la receta estándar — `position:absolute`, caja de 1px,
+`clip-path: inset(50%)`, `overflow:hidden` — y **nunca** `display:none`, que es
+justamente lo que la haría inútil. `Validate()` rechaza `Hide()` a su lado, y
+`VisuallyHidden` entra al conjunto que ya se disputaba `position`.
+
+## B. `Kind.Allows(Form, Selected)` — `v0.6.28`
+
+Mismo movimiento que trajo `Open` a `Form`, un control más abajo: un formulario
+suele contener un juego de chips donde uno queda elegido — un selector de días,
+un juego de filtros. Ese es el estado que `Listbox` ya carga, y re-declarar todo
+el formulario como `Listbox` para conseguirlo le costaría `Invalid` y `Open`,
+que su misma hoja de estilos ya usa.
+
+No exporta ningún símbolo: amplía el retorno de un predicado existente. `Current`
+sigue fuera — significa "en la que estás" en una navegación, y un formulario no
+tiene esa noción. El test positivo vive en un solo lugar
+(`TestFormAllowsInvalidOpenAndSelected`); dos tests sobre un predicado es la
+duplicación que este repo prohíbe.
+
+
+---
+
+# Fase B — la familia de interacción se separa de la superficie
+
+> **Fase B (GATE)** de
+> [`webtyp/docs/TYPED_EVENTS_AND_SURFACES_MASTER_PLAN.md`](https://github.com/webtyp/webtyp/blob/main/docs/TYPED_EVENTS_AND_SURFACES_MASTER_PLAN.md).
+> Independiente de la Fase A; `components` consume las dos.
+>
+> Escrito 2026-09-10; **corregido** tras auditar contra
+> `webtyp/app-releases/docs/CONSTRUCTION_HARNESS.md`. Nada está implementado.
+> Todo dato lleva su `archivo:línea` para comprobarlo a mano.
+
+## 0. El gate de api-design — las cinco respuestas
+
+El único cambio de API es el **contrato** de `Interactive(s Surface)`: deja de
+pintar la superficie de reposo y pasa a declarar solo la familia de la que se
+derivan los estados. La firma no cambia; el significado sí, así que el gate
+aplica.
+
+### 1. Prior art
+
+| Sistema | Reposo e interacción | ¿Deriva uno del otro? |
+|---|---|---|
+| **Material Design 3** | *container color* y *state layer* son tokens distintos | no |
+| **Tailwind** | `bg-transparent hover:bg-slate-200` — utilidades independientes | no |
+| **Radix Themes** | escala indexada: `--accent-3` reposo, `--accent-4/5` hover/active | no, se indexa |
+| **Bootstrap** | `.btn-outline-primary` — el par reposo/hover se nombra como variante | no |
+
+El invariante: **ninguno deriva el color de interacción oscureciendo el de
+reposo.** O nombran los dos, o indexan una escala.
+
+**Por qué este ecosistema difiere, y por qué está bien.** Derivar es una
+simplificación real: un token y los estados salen solos, sin que cada componente
+elija tres colores. No se abandona. Lo que se corrige es que hoy la **fuente**
+de esa derivación se decide por accidente — el último de `As()`/`Interactive()`
+que se haya escrito — en vez de declararse.
+
+### 2. El test del nombre novato
+
+```go
+Part(PartRow,
+    style.As(style.Subtle),          // píntalo apagado y transparente
+    style.Interactive(style.Page),   // sus estados salen de la familia Page
+)
+```
+
+Leído por alguien sin contexto: *"píntalo así, y sus estados salen de allá"*.
+Dos frases, dos decisiones. Hoy esas mismas dos líneas colapsan en una y la
+segunda gana en silencio. No se inventa vocabulario: `As` e `Interactive` ya son
+las palabras de este paquete.
+
+### 3. El ledger de complejidad
+
+```
+Conceptos a aprender            +1 (superficie y familia son cosas distintas) / 0
+Líneas en el call site          +6                                           / 0   ← PEOR
+Archivos a tocar para hacer X   +0                                           / 0
+Formas de hacer lo mismo         0                                           / −1  (se borra el "Interactive también pinta")
+Modos de fallo silencioso        0                                           / −2  (D1 y D2 pasan a diagnóstico)
+```
+
+**La fila que empeora son 6 líneas** en todo el ecosistema: de 10 bloques con
+`Interactive()`, 4 ya declaran `As()` y 6 dependen hoy del pintado implícito.
+Esos 6 ganan una línea explícita. Es el precio de que las otras dos filas bajen.
+
+### 4. Dónde va
+
+`widget/style`. Es el dueño de las recetas — la tabla de capas de
+`BUTTON_SYSTEM_MASTER_PLAN.md` §2 ya lo fija: `css` los valores, `widget/style`
+las recetas, `components` solo ensambla. D3 existe justamente porque una regla de
+receta terminó viviendo en el consumidor.
+
+### 5. Qué borra este cambio
+
+- La regla implícita "`Interactive(s)` además pinta `s`". Se borra, no se
+  deprecia.
+- `TestNoHandRolledIconCaps` en `components/conformance_test.go`: la regla se
+  muda a `Validate()`, no se duplica.
+
+>
+> **Qué cambió respecto de la primera versión.** Ordenaba los defectos por
+> ratio de contraste — o sea, por lo que se ve. El harness ordena por **modo de
+> fallo**: *"compile error → loud development diagnostic → (never) silent
+> failure"*. Reordenado con ese criterio, el defecto que motivó todo esto (un
+> hover ilegible) resulta ser el **menos** grave, y el que nadie vio nunca es el
+> más grave. También agrego dos violaciones que introduje yo en `IconCap()` y
+> que la primera versión no auditaba.
+
+## 1. Los defectos, ordenados por el criterio del harness
+
+| # | Defecto | Modo de fallo | ¿Se ve? |
+|---|---|---|---|
+| **D1** | `Interactive(X)` y `As(Y)` escriben el mismo `r.surface`; **gana el último, sin aviso** | **silencioso** | no |
+| **D2** | `IconCap()` en el cap + `IconBox()` en el glifo: la regla del cap gana por especificidad, la del glifo se ignora | **silencioso** | no |
+| **D3** | La receta `IconCap()` se hace obligatoria con un test en `components` — el **consumidor**, no la librería dueña | sin cobertura fuera de un repo | no |
+| **D4** | `familyBase(Subtle)` devuelve `css.ColorMuted`, un token de **texto**, y de ahí salen los fondos de hover/focus/press | valor incorrecto, **visible** | sí |
+
+D4 es el que reportó el usuario. Es el último de la lista porque produce un
+resultado *visible y equivocado*, que es el modo de fallo menos malo de los
+cuatro. D1 y D2 no producen nada: ni error, ni diagnóstico, ni efecto.
+
+## 2. D1 — la colisión silenciosa (el defecto principal)
+
+**Los hechos**
+
+| # | Hecho | Dónde |
+|---|---|---|
+| 1 | `Interactive(s)` escribe `r.hasSurface, r.surface, r.interactive`. **No guarda la familia en un campo propio.** | `style/surface.go:218-223` |
+| 2 | `As(s)` escribe el mismo `r.surface`. | `style/surface.go` |
+| 3 | El emisor de estados hace `base := familyBase(r.surface)`. | `style/emit_states.go:142` |
+
+**La prueba de que engaña.** `components/targethour/css.go:43-45` escribe
+`Interactive(style.Page)` y dos líneas después `As(style.Subtle)`. El comentario
+del propio autor, ahí mismo, dice *"Kept as a side inset so the row keeps its
+Interactive(Page) surface over the whole box"*. Creía que la familia `Page`
+sobrevivía. No sobrevive. El DSL lo contradijo y no dijo nada.
+
+**Por qué es el defecto principal, según el harness**
+
+- *"Silent failures. Cases where misuse produces neither an error nor a visible
+  effect → turn them into compile errors; if that is impossible, into a loud
+  development diagnostic."*
+- Principio 3, *"Illegal states unrepresentable. One intent = exactly one path,
+  typed to demand what it needs"*: "reposo Subtle, interacción derivada de Page"
+  es una intención legítima — un botón fantasma — y **hoy no tiene ningún
+  camino**. No es que el autor se haya equivocado: escribió lo único que se
+  parecía a lo que quería.
+- *"A missing contract at a boundary is a defect in the library, not in the
+  consumer."* El contrato que falta es el de "familia de interacción", que hoy
+  no existe como concepto separado de "superficie".
+
+**El error de razonamiento de la primera versión de este plan.** Decía que D1
+"no bloquea, porque con la salida A targethour queda bien igual". Ese es
+exactamente el razonamiento que el harness prohíbe: argumenta desde *este
+consumidor queda bien de casualidad* en vez de desde *el próximo consumidor no
+recibe ninguna señal*.
+
+## 3. D2 y D3 — lo que introduje yo en `IconCap()`
+
+`IconCap()` (`style/except.go`) hace que el cap emita su propia regla
+`> svg { width: 50%; height: 50% }`, para que el tamaño del glifo deje de ser
+una decisión por componente. Cierra el agujero que produjo el bug original —
+cuatro componentes, tres tamaños distintos para una caja idéntica de 50px — pero
+abre dos.
+
+**D2 — comprobado, no supuesto.** Con `Part("cap", IconCap())` y
+`Part("glyph", IconBox(IconLg))` en la misma hoja:
+
+```
+VALIDATE ACEPTA — sin error ni diagnóstico
+.probe__cap > svg { width: 50%; ... }     ← especificidad (0,1,1)
+.probe__glyph    { width: 2.5em; ... }    ← especificidad (0,1,0), se ignora
+```
+
+Mismo `@layer primitives`, así que decide la especificidad y gana el cap. El
+autor escribe `IconBox(IconLg)`, no ve error, no ve efecto, y no tiene forma de
+saber por qué.
+
+Y mi propio comentario de `IconCap()` dice: *"it just must not re-declare
+IconBox"*. El harness nombra eso literalmente: *"'remember to call…' / 'don't
+forget…' — if it must be remembered, it is a hole in the harness."*
+
+**D3 — la guarda está en el repo equivocado.** `TestNoHandRolledIconCaps`
+(`components/conformance_test.go`) recorre los `css.go` con una expresión
+regular buscando `MediaBox(AspectSquare) + ControlBox()`. Copia el precedente de
+`TestNoHandRolledButtons`, así que es consistente con la casa — pero por el
+harness está mal ubicada:
+
+- *"The glue is written once, in the library that owns it."*
+- Solo protege a `webtyp/components`. Cualquier otra app que ensamble widgets no
+  recibe nada.
+- `Validate()` **ya es** el "loud development diagnostic" de esta librería
+  (panica en `Stylesheet()`). Es ahí donde vive esta regla, y desde ahí cubre a
+  todo consumidor, no a un repo.
+
+## 4. D4 — el valor incorrecto, y lo que medí
+
+`Subtle` como superficie es `{bg: "transparent", text: ColorMuted}`
+(`style/surface.go:183-187`): es un tratamiento de **texto**, no tiene fondo
+propio. Pero `familyBase(Subtle)` devuelve `css.ColorMuted`
+(`style/emit_values.go:264-265`), así que los estados oscurecen un color de
+texto y lo usan de fondo, debajo de ese mismo texto.
+
+Ratios WCAG reales, tokens en claro
+(`--color-muted #6E6E73` · `--color-surface #F2F2F7` · `--color-on-surface #1C1C1E`):
+
+| Estado | Texto | Fondo | Ratio | |
+|---|---|---|---|---|
+| Reposo | `#6E6E73` | `#F2F2F7` | **4.54:1** | pasa AA |
+| Hover (hoy) | `#6E6E73` | `#57575b` | **1.42:1** | falla |
+| Focus (hoy) | `#6E6E73` | `#414145` | **2.00:1** | falla |
+| Press (hoy) | `#6E6E73` | `#2d2d2f` | **2.71:1** | falla |
+
+El dato que importa no es que falle: es que **el reposo pasa y la interacción
+empeora**. Pasar el puntero por encima de un control lo vuelve ilegible.
+
+Corrección mínima probada en local (`familyBase(Subtle) → css.ColorSurface`),
+revertida antes de escribir esto:
+
+| Estado | Texto | Fondo | Ratio | |
+|---|---|---|---|---|
+| Hover | `#6E6E73` | `#c3c3c7` | **2.89:1** | sigue fallando |
+| Hover + texto `on-surface` | `#1C1C1E` | `#c3c3c7` | **9.68:1** | pasa AA |
+
+Cambiar la familia **no alcanza**: mientras `Subtle` mantenga el texto apagado y
+el fondo se oscurezca, el contraste sigue cayendo.
+
+Tres sitios afectados, y dos son usos que el framework bendice:
+`components/calendarslider/css.go` (el que se reportó, ya migrado a
+`Interactive(Panel)`), `components/targethour/css.go:43-45`, y
+`components/usermenu/css.go:23` con `style.Button(style.Subtle)` — mientras el
+doc de `Button()` en `style/except.go:165-170` lista textualmente
+*"s paints it — Primary, Secondary, Danger, Subtle"*.
+
+## 5. Salidas, evaluadas contra los principios
+
+| Salida | D1 | D2 | D3 | D4 | Veredicto |
+|---|---|---|---|---|---|
+| **A** — solo `familyBase(Subtle) → ColorSurface` | ✗ | ✗ | ✗ | parcial | insuficiente: deja los dos fallos silenciosos |
+| **B** — A + texto `on-surface` en los estados | ✗ | ✗ | ✗ | ✓ | llega a AA, pero no toca ningún fallo silencioso |
+| **C** — prohibir `Subtle` interactivo con una guarda | ✗ | ✗ | ✗ | ✓ | trata el síntoma: `familyBase` sigue devolviendo un token de texto, y hay que sacar `Subtle` del doc de `Button()` |
+| **D** — campo propio para la familia de interacción, + B, + `Validate()` rechaza `IconBox` bajo un `IconCap`, + mover la guarda de caps a `Validate()` | ✓ | ✓ | ✓ | ✓ | la única alineada con el principio 6 |
+
+La primera versión de este plan recomendaba **A** y anotaba D1 como "aparte".
+Corregido: **D**. Las tres primeras arreglan lo que se ve y dejan intacto lo que
+no se ve, que es justo el orden inverso al que pide el harness.
+
+**Nota sobre el alcance.** D no es "más trabajo por prolijidad": D1 y D2 son
+fallos silenciosos, y este documento existe porque el harness dice que ésos son
+los que nunca hay que dejar pasar. Si aun así hay que recortar, el corte honesto
+es **B + el diagnóstico de D2**, dejando D1 anotado — pero anotado como deuda
+declarada, no como "no bloquea".
+
+## 6. El test ácido, aplicado a esta sesión
+
+El documento cierra con esto:
+
+> *"And if that agent has to **ask a question** to proceed — 'is it acceptable to
+> declare this interface locally?' — the harness has already failed by its own
+> definition: the signature did not guide, and the compiler rejected the correct
+> intent."*
+
+En esta sesión hubo que preguntar **qué superficie usar** para arreglar el
+hover. La firma no guió. Por la propia definición del repo, eso ya es la prueba
+de que el harness está abierto acá — independientemente de qué salida se elija.
+
+
+## 7. Etapas
+
+| # | Etapa | Archivos | Listo cuando |
+|---|---|---|---|
+| 1 | Campo propio para la familia | `style/sheet.go`, `style/surface.go` | `Interactive(s)` escribe `interactiveFamily`, **no** `surface`; `As(s)` sigue escribiendo solo `surface` |
+| 2 | El emisor lee el campo nuevo | `style/emit_states.go:142` | `familyBase(r.interactiveFamily)`; sin familia declarada no se emiten estados |
+| 3 | D4 — el valor | `style/emit_values.go`, `style/surface.go` | `familyBase(Subtle)` → `ColorSurface`, y `Subtle` pasa su texto a `on-surface` en hover/focus/press; hover ≥ 4.5:1 verificado en test |
+| 4 | D2 — diagnóstico | `style/validate*.go` | `IconBox` en una parte bajo un `IconCap` es rechazado con mensaje explícito |
+| 5 | D3 — la guarda se muda | `style/validate*.go` | `MediaBox(AspectSquare)` + `ControlBox()` juntos son rechazados y apuntan a `IconCap()` |
+| 6 | Test con forma de consumidor | `style/consumer_test.go` | una hoja real declara `As(Subtle) + Interactive(Page)` y se asserta que reposo y estados vienen de familias distintas |
+| 7 | Docs | `docs/` | ninguna prosa que repita lo que la firma ya obliga |
+
+`gotest` verde en cada etapa. El tag se publica recién al cerrar la 7.
+
+## 8. Cero deuda técnica — chequeo de cierre
+
+- `grep -rn "interactive.*surface" style/` no muestra ningún punto donde una
+  familia se infiera de la superficie.
+- Ningún test acepta `IconCap()` junto a `IconBox()`.
+- `components/conformance_test.go` ya no contiene `TestNoHandRolledIconCaps`
+  (se borra en la Fase C, no se deja duplicada).
+- Sin `TODO`, sin shim de compatibilidad, sin una vía que restaure el
+  comportamiento viejo.

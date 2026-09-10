@@ -40,6 +40,7 @@ type rule struct {
 	centerContent  bool
 	startContent   bool
 	controlBox     bool
+	iconCap        bool
 	logoBox        bool
 	chipBox        bool
 	buttonBox      bool
@@ -91,6 +92,12 @@ type rule struct {
 	hasSurface  bool
 	surface     Surface
 	interactive bool
+	// interactiveFamily is the family the hover/focus/press states derive
+	// from. It is a separate decision from the resting surface: As() writes
+	// only surface, Interactive() writes only interactiveFamily. One intent
+	// ("resting look Y, interaction family X") is exactly one path —
+	// As(Y) + Interactive(X) — instead of two options racing for one field.
+	interactiveFamily Surface
 
 	// overlay marca una regla de ESTADO (When/Cue/CueWithin). Un estado se pinta
 	// encima de la caja base: no puede cambiar su tamaño, porque el elemento

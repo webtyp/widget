@@ -43,8 +43,9 @@ The substitute for design judgement: you do not choose, you look up.
 | an element that exists only on phones | `OnlyOn(css.Mobile, "part", …)` |
 | the page background | `As(Page)` |
 | a card or panel | `As(Panel)` |
-| something clickable | `Interactive(Primary)` |
-| something clickable, secondary | `Interactive(Secondary)` |
+| something clickable | `As(Primary)` + `Interactive(Primary)` — `As` paints the rest, `Interactive` derives the states |
+| something clickable, secondary | `As(Secondary)` + `Interactive(Secondary)` |
+| resting apagado, states from another family | `As(Subtle)` + `Interactive(Page)` |
 | the selected item of a list | `When(widget.Selected, "item", As(Highlight))` |
 | secondary text | `As(Subtle)` |
 | an error | `As(Danger)` |

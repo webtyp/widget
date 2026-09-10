@@ -447,6 +447,25 @@ accordion in flow inside the row (what `targetlist` adopted), or move the panel
 out of the scroller (what `usermenu` does today). A `Scroll()` part that is
 NOT on the Flyout's declared chain is unaffected.
 
+### 9.8 `Interactive(s)` no longer paints — it declares the family only
+
+`Interactive(s)` used to write the resting surface AND derive the states from
+it, racing `As()` for the same field: the last call won silently. It now
+writes only the interaction family; `As()` alone paints the resting look.
+
+| Before | After |
+|---|---|
+| `Interactive(X)` (resting X + states from X) | `As(X)` + `Interactive(X)` |
+| `Interactive(X)` + `As(Y)` (resting Y by accident of order, family lost) | `As(Y)` + `Interactive(X)` — resting Y, family X, both kept |
+| `Button(s)` | unchanged — it paints `s` and derives from `s` |
+
+**Every `Interactive(X)` without an `As` on the same rule loses its resting
+background.** The compiler does not catch it — the part simply goes
+transparent — so each migrated rule needs a visual check, not only a green
+suite. `Subtle` resting text additionally repaints to on-surface inside the
+states (AA 9.68:1, was 1.42:1); `familyBase(Subtle)` is the neutral surface
+token, never the muted text token.
+
 ---
 
 ## Related documents

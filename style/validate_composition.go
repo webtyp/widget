@@ -55,6 +55,37 @@ func (s *Sheet) validateComposition(errs []error) []error {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Button already carries the control height; drop ControlBox", string(s.widget.WidgetName()), string(p)))
 		}
 	}
+	// IconCap sizes the glyph inside the cap itself (a `> svg` child rule at
+	// half the cap), so an IconBox beside it is either redundant or silently
+	// ignored: the cap's (0,1,1) child rule wins over the glyph's (0,1,0)
+	// class rule in the same layer and the IconBox size never applies — no
+	// error, no diagnostic, no effect. Same part carrying both is always a
+	// mistake; a glyph part nested inside a cap part (via Within) carrying
+	// IconBox is the same mistake across two parts.
+	checkIconCap := func(p widget.Part, r rule) {
+		if r.iconCap && r.hasIcon {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: IconCap already sizes the glyph; drop IconBox", string(s.widget.WidgetName()), string(p)))
+		}
+	}
+	// A hand-rolled icon cap — MediaBox(AspectSquare) + ControlBox() — sizes
+	// the box and says nothing about the glyph, which is what left three
+	// components disagreeing about the glyph inside an identical 50px square.
+	// IconCap() is the one recipe; the pair is rejected here, in the library
+	// that owns both, instead of by a regex in a consumer repo.
+	//
+	// Exempt: a square control-height block holding TEXT with leading-edge
+	// alignment (targetdate's PartLead: StartContent + Pad + Divider) is not
+	// a glyph cap — there is no <svg> for IconCap's child rule to size and
+	// its centring would fight the text layout. Glyph caps centre; text
+	// blocks start-align.
+	checkHandRolledCap := func(p widget.Part, r rule) {
+		if r.iconCap {
+			return
+		}
+		if r.hasFlow && r.flowType == flowMediaBox && r.flowAspect == AspectSquare && r.controlBox && !r.startContent {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: hand-rolled icon cap (MediaBox(AspectSquare) + ControlBox); use IconCap()", string(s.widget.WidgetName()), string(p)))
+		}
+	}
 	// Both ends of a descendant rule have to exist, or it silently styles
 	// nothing. CueWithinHover carries the same obligation.
 	checkCueWithin := func(method string, k cueWithinKey) {
@@ -269,13 +300,35 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	checkPosition("", s.rootRule)
 	checkButton("", s.rootRule)
 	checkHidden("", s.rootRule)
+	checkIconCap("", s.rootRule)
+	checkHandRolledCap("", s.rootRule)
 	for p, pr := range s.partRules {
 		checkPosition(p, pr)
 		checkButton(p, pr)
 		checkHidden(p, pr)
+		checkIconCap(p, pr)
+		checkHandRolledCap(p, pr)
 	}
 	for k, dr := range s.deviceRules {
 		checkPosition(k.part, dr)
+	}
+
+	// An IconBox glyph nested inside an IconCap cap (declared via Within):
+	// the cap's `> svg` child rule (0,1,1) silently wins over the glyph's
+	// class rule (0,1,0) in the same layer, so the IconBox size never
+	// applies. Same mistake as checkIconCap, across two parts.
+	for p, pr := range s.partRules {
+		if !pr.hasIcon {
+			continue
+		}
+		container, ok := s.within[p]
+		for ok && container != "" {
+			if cr, exists := s.partRules[container]; exists && cr.iconCap {
+				errs = append(errs, fmt.Errf("sheet %s: part %q: IconBox under IconCap part %q is silently overridden by the cap's glyph rule; drop IconBox", string(s.widget.WidgetName()), string(p), string(container)))
+				break
+			}
+			container, ok = s.within[container]
+		}
 	}
 
 	// An element taken out of the flow must always end up with a DECLARED

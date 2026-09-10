@@ -21,9 +21,15 @@ func (s *Sheet) validateStates(errs []error) []error {
 	// Inactive is the only surface with no interaction family: interacting
 	// with the deliberately-dead shade is always a mistake. Page stays legal —
 	// it is the whitest surface and a perfectly live (even default) one.
+	//
+	// Subtle used to be rejected here by omission: its family base was
+	// --color-muted, a text token, so Interactive(Subtle) derived dark
+	// backgrounds under muted text. That gap is closed in familyBase(), which
+	// now returns the neutral surface family for Subtle, and in emit_states.go,
+	// which repaints Subtle resting text to on-surface inside the states.
 	checkInteractive := func(p widget.Part, r rule) {
-		if r.interactive && r.surface == Inactive {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: surface %s has no interaction states", string(s.widget.WidgetName()), string(p), r.surface.String()))
+		if r.interactive && r.interactiveFamily == Inactive {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: surface %s has no interaction states", string(s.widget.WidgetName()), string(p), r.interactiveFamily.String()))
 		}
 	}
 	checkInteractive("", s.rootRule)

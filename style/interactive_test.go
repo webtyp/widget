@@ -61,10 +61,13 @@ func TestInteractivePageIsLegalAndWhite(t *testing.T) {
 	// surface: the white page background plus the cursor: pointer an
 	// interactive rule carries (closes 0.2 — white-and-clickable was not
 	// expressible).
+	//
+	// Interactive declares the family only; the resting paint comes from
+	// As. White-and-clickable is therefore As(Page) + Interactive(Page).
 	wd := &testWidget{name: "w", kind: widget.Region}
-	sheet := style.For(wd).Root(style.Interactive(style.Page))
+	sheet := style.For(wd).Root(style.As(style.Page), style.Interactive(style.Page))
 	if errs := sheet.Validate(); len(errs) != 0 {
-		t.Fatalf("Interactive(Page) must validate, got: %v", errs)
+		t.Fatalf("As(Page) + Interactive(Page) must validate, got: %v", errs)
 	}
 
 	s := sheet.Stylesheet().String()
@@ -72,10 +75,29 @@ func TestInteractivePageIsLegalAndWhite(t *testing.T) {
 		t.Errorf("expected Interactive(Page) to emit cursor: pointer, got:\n%s", s)
 	}
 	if !strings.Contains(s, "background-color: "+css.ColorBackground.LightValue()+";") {
-		t.Errorf("expected Interactive(Page) to emit the white page background (%s), got:\n%s", css.ColorBackground.LightValue(), s)
+		t.Errorf("expected As(Page) to emit the white page background (%s), got:\n%s", css.ColorBackground.LightValue(), s)
 	}
 	// the family derives from the page background, not from nothing
 	if !strings.Contains(s, css.Hover(css.ColorBackground)) {
 		t.Errorf("expected the hover derivation from ColorBackground, got:\n%s", s)
+	}
+}
+
+func TestInteractiveAlonePaintsNoRestingSurface(t *testing.T) {
+	// Interactive declares the family, not the resting look: alone it emits
+	// the cursor and the derived states but no resting background. Resting
+	// paint without an explicit As would be the silent coupling this change
+	// removes (D1).
+	wd := &testWidget{name: "w", kind: widget.Region}
+	s := style.For(wd).Root(style.Interactive(style.Primary)).Stylesheet().String()
+
+	if !strings.Contains(s, "cursor: pointer;") {
+		t.Errorf("expected cursor: pointer, got:\n%s", s)
+	}
+	if !strings.Contains(s, css.Hover(css.ColorPrimary)) {
+		t.Errorf("expected the hover derivation from ColorPrimary, got:\n%s", s)
+	}
+	if strings.Contains(s, "background-color: "+css.ColorPrimary.LightValue()+";") {
+		t.Errorf("Interactive alone must not paint the resting background, got:\n%s", s)
 	}
 }

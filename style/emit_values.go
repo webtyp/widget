@@ -262,7 +262,12 @@ func familyBase(s Surface) css.Token {
 	case Danger:
 		return css.ColorDanger
 	case Subtle:
-		return css.ColorMuted
+		// Subtle is a resting treatment — transparent background, muted
+		// text — with no background of its own. Its interaction states
+		// therefore derive from the neutral surface family, never from the
+		// muted TEXT token: darkening a text colour and using it as a
+		// background put muted text on a darkened muted fill (1.42:1).
+		return css.ColorSurface
 	case Page:
 		// Page is the whitest surface: a white base lets Interactive(Page)
 		// derive a hover/focus/press family from the page background itself.
