@@ -202,6 +202,22 @@ func (s Surface) resolve() triplet {
 	}
 }
 
+// resolvedRadius is the radius a rule gets when it does not call Round().
+//
+// A button is the exception to "the surface decides": its corner is a property
+// of being a button, not of the colour it is painted. Deriving it from the
+// surface made shape follow palette — a Primary button came out RadiusMd while
+// the Secondary sitting beside it in the same dialog came out RadiusSm, so a
+// confirm modal read as if it had been assembled from two products. Every
+// component that spelled a button out by hand had already worked around this by
+// passing Round(RadiusMd); pinning it here is what lets them stop.
+func (r rule) resolvedRadius() Radius {
+	if r.buttonBox {
+		return RadiusMd
+	}
+	return r.surface.defaultRadius()
+}
+
 // defaultRadius returns the default radius associated with a Surface.
 func (s Surface) defaultRadius() Radius {
 	switch s {

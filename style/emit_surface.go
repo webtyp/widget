@@ -65,8 +65,8 @@ func (r rule) surfaceDecls() []string {
 		// it and leave the box rounded against the frame (the crudview root
 		// measured 4px with EdgeToEdge already applied). An explicit Round()
 		// still wins: it is emitted in the widgets layer, same as the surface.
-		if r.surface.defaultRadius() != RadiusNone && !r.hasRound && !r.edgeToEdge {
-			decls = append(decls, "border-radius: "+radiusVar(r.surface.defaultRadius())+";")
+		if radius := r.resolvedRadius(); radius != RadiusNone && !r.hasRound && !r.edgeToEdge {
+			decls = append(decls, "border-radius: "+radiusVar(radius)+";")
 		}
 		if t.text != "" {
 			if t.textStatic != "" {
