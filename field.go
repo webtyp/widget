@@ -23,6 +23,11 @@ const (
 	PartError      = Part("error")
 	PartRadioGroup = Part("radio-group")
 	PartSubmit     = Part("submit")
+	// PartReveal is the show/hide toggle button a masked input (input.Masked)
+	// draws inside itself. form emits it only when the field is masked;
+	// fieldset styles it (the eye glyph, positioned inside the control) and
+	// switches it via the existing Selected state (revealed = selected).
+	PartReveal = Part("reveal")
 	// PartForm is the <form> element that wraps the field stack. form emits it;
 	// the fieldset skin styles it as the one place the inter-field rhythm
 	// lives (a gap on the container, so the ends do not double the way

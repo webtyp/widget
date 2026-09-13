@@ -158,9 +158,13 @@ func TestIconCapSizesItsOwnGlyph(t *testing.T) {
 		Part("cap", style.As(style.Primary), style.IconCap()).
 		Stylesheet().String()
 
+	// The cap must emit everything the four hand-composed options emitted, or
+	// it is not a drop-in for them.
 	for _, want := range []string{
 		"aspect-ratio: 1;",
+		"overflow: hidden;",
 		"min-height: var(--control-height",
+		"min-width: var(--control-width",
 		"flex-shrink: 0;",
 	} {
 		if !strings.Contains(s, want) {
@@ -168,8 +172,6 @@ func TestIconCapSizesItsOwnGlyph(t *testing.T) {
 		}
 	}
 
-	// The glyph rule is the point: it hangs off the CAP's selector, so a
-	// component cannot size the glyph independently of the box holding it.
 	if !strings.Contains(s, ".shell__cap > svg") {
 		t.Errorf("IconCap must size its own glyph via a child rule, got:\n%s", s)
 	}
@@ -177,17 +179,19 @@ func TestIconCapSizesItsOwnGlyph(t *testing.T) {
 	if end := strings.Index(kid, "}"); end >= 0 {
 		kid = kid[:end]
 	}
-	for _, want := range []string{"width: 50%;", "height: 50%;"} {
-		if !strings.Contains(kid, want) {
-			t.Errorf("the glyph should be half its cap (%q), got:\n%s", want, kid)
+
+	// A DEFINITE size. A percentage of the cap is circular — the glyph would be
+	// sized off the cap while the cap is sized off its content — and a bare
+	// <svg> resolves that at its 300x150 replaced-element fallback, rendering
+	// the cap 300x300. That shipped once; this assertion is why it cannot again.
+	for _, banned := range []string{"width: 50%", "height: 50%", "%;"} {
+		if strings.Contains(kid, banned) {
+			t.Errorf("the cap's glyph must not be sized as a percentage of the cap (%q), got:\n%s", banned, kid)
 		}
 	}
-
-	// Half the CAP, never a font-relative IconSize step: the two scales are
-	// unrelated, and pinning the glyph to the font is what let them drift.
-	for _, banned := range []string{"1em", "1.5em", "2.5em"} {
-		if strings.Contains(kid, banned) {
-			t.Errorf("the cap's glyph must not be font-relative (%q), got:\n%s", banned, kid)
+	for _, want := range []string{"width: 1.5em;", "height: 1.5em;", "flex-shrink: 0;"} {
+		if !strings.Contains(kid, want) {
+			t.Errorf("the cap's glyph should carry a definite em size (%q), got:\n%s", want, kid)
 		}
 	}
 }

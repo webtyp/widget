@@ -231,21 +231,29 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 		})
 	}
 
-	// The glyph is half its cap. Emitted BY THE CAP, as a child rule, so a
-	// component cannot answer the question differently — the bug this recipe
-	// exists to make unrepresentable. 50% of --control-height, not an
-	// IconSize step: IconSize is relative to the font (1.5em, 2.5em) and a cap
-	// is measured in control heights, so a font-relative glyph inside it
-	// drifts the moment either scale moves. Same shape as MediaBox's
-	// `> img, > video` rule above.
+	// The glyph, emitted BY THE CAP as a child rule, so a component cannot
+	// answer the question differently — that is what this recipe is for.
+	//
+	// A DEFINITE size (em), never a percentage of the cap. A percentage looks
+	// tidier and is wrong: a bare <svg> has no intrinsic size, so it falls back
+	// to the replaced-element default 300x150. With `width: 50%` the glyph's
+	// size depends on the cap and the cap's width depends on its content — the
+	// glyph. The circular dependency resolves at that 300px fallback, and the
+	// cap renders 300x300 instead of 50x50. Measured in app-demo's selectsearch
+	// header before this was fixed; it is the exact gotcha IconBox exists to
+	// prevent, walked into by the recipe meant to replace IconBox.
+	//
+	// IconMd (1.5em) is the step searchbar already used inside this same cap,
+	// and it keeps optical padding around a SOLID glyph — one whose path fills
+	// its whole viewBox, like a calendar — which an edge-to-edge glyph does not.
 	if len(iconCapSel) > 0 {
 		var iconCapKids []string
 		for _, sel := range iconCapSel {
 			iconCapKids = append(iconCapKids, sel+" > svg")
 		}
 		emitPrimitive(iconCapKids, []string{
-			"width: 50%;",
-			"height: 50%;",
+			"width: " + iconSizeValue(IconMd) + ";",
+			"height: " + iconSizeValue(IconMd) + ";",
 			"flex-shrink: 0;",
 		})
 	}

@@ -96,10 +96,21 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 	// square when the row it sits in grows taller than one control — the same
 	// reason searchbar's PartIcon reached for MediaBox by hand. The glyph's
 	// own size is emitted as a child rule, in emit_primitives.go.
+	// The cap: everything the four hand-composed options emitted together —
+	// MediaBox(AspectSquare) + ControlBox() + KeepSize() + centring — so the
+	// box behaves exactly as it did before this recipe existed. min-height and
+	// min-width are FLOORS, not fixed sizes: a header that grows taller than
+	// one control still lets the square cap fill it.
+	//
+	// The glyph's size is emitted as a child rule in emit_primitives.go, and it
+	// is font-relative on purpose. See the comment there.
 	if r.iconCap {
 		decls = append(decls, "aspect-ratio: 1;")
+		decls = append(decls, "overflow: hidden;")
 		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
+		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 		decls = append(decls, "flex-shrink: 0;")
+		decls = append(decls, "flex-grow: 0;")
 		decls = append(decls, "display: flex;")
 		decls = append(decls, "align-items: center;")
 		decls = append(decls, "justify-content: center;")
