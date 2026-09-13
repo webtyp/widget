@@ -139,7 +139,15 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		// align-items: stretch. Any align-self but stretch takes content width.
 		decls = append(decls, "align-self: center;")
 		decls = append(decls, "flex-shrink: 0;")
-		decls = append(decls, "flex-grow: 0;")
+		// ...unless the rule ALSO asked to grow. Shrink-wrapping is the right
+		// default — it is what stops a button filling its panel — but it is a
+		// default, not a law: a footer's action bar is a button that genuinely
+		// spans its row, and emitting flex-grow:0 over an explicit Grow() left
+		// crudview's "+" bar collapsed to a square chip. Grow() is deliberate and
+		// wins; without it nothing changes.
+		if !r.grow {
+			decls = append(decls, "flex-grow: 0;")
+		}
 	}
 
 	if r.logoBox {
