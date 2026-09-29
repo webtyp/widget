@@ -383,7 +383,7 @@ duplicación que este repo prohíbe.
 > Independiente de la Fase A; `components` consume las dos.
 >
 > Escrito 2026-09-10; **corregido** tras auditar contra
-> `webtyp/app-releases/docs/CONSTRUCTION_HARNESS.md`. Nada está implementado.
+> la [skill `api-design`](https://github.com/webtyp/devskills/blob/main/skills/api-design/SKILL.md). Nada está implementado.
 > Todo dato lleva su `archivo:línea` para comprobarlo a mano.
 
 ## 0. El gate de api-design — las cinco respuestas
