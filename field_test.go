@@ -23,6 +23,14 @@ func TestFieldAnatomy(t *testing.T) {
 		{PartInput, wantRoot + "__input"},
 		{PartError, wantRoot + "__error"},
 		{PartRadioGroup, wantRoot + "__radio-group"},
+		{PartRadioOption, wantRoot + "__radio-option"},
+		{PartRadioNative, wantRoot + "__radio-native"},
+		{PartRadioUnchecked, wantRoot + "__radio-unchecked"},
+		{PartRadioChecked, wantRoot + "__radio-checked"},
+		{PartCheckOption, wantRoot + "__check-option"},
+		{PartCheckNative, wantRoot + "__check-native"},
+		{PartCheckUnchecked, wantRoot + "__check-unchecked"},
+		{PartCheckChecked, wantRoot + "__check-checked"},
 	} {
 		if got := NameField.Class(tc.part).String(); got != tc.want {
 			t.Errorf("NameField.Class(%s).String() = %q; want %q", tc.part, got, tc.want)
