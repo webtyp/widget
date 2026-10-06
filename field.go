@@ -42,4 +42,9 @@ const (
 	// lives (a gap on the container, so the ends do not double the way
 	// per-field margins would).
 	PartForm = Part("form")
+	// PartHelp is the persistent help text under a field's label (model's
+	// Field.Help). form emits it and ties the control to it with
+	// aria-describedby; the fieldset skin styles it. Unlike a placeholder it
+	// stays visible while the user types, so instructions belong here.
+	PartHelp = Part("help")
 )
