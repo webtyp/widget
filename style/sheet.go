@@ -136,6 +136,7 @@ type rule struct {
 
 	fill         bool
 	grow         bool
+	spanFull     bool
 	pushEnd      bool
 	scroll       bool
 	keepSize     bool

@@ -268,8 +268,8 @@ func familyBase(s Surface) css.Token {
 		// muted TEXT token: darkening a text colour and using it as a
 		// background put muted text on a darkened muted fill (1.42:1).
 		return css.ColorSurface
-	case Page:
-		// Page is the whitest surface: a white base lets Interactive(Page)
+	case Page, Field:
+		// Page and Field share the white base: a white base lets Interactive(Page)
 		// derive a hover/focus/press family from the page background itself.
 		return css.ColorBackground
 	default:

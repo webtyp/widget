@@ -81,3 +81,16 @@ func TestScrollRowIsSmooth(t *testing.T) {
 		t.Errorf("expected ScrollRow to emit scroll-behavior: smooth;, got:\n%s", s)
 	}
 }
+
+func TestSpanFullEmitsGridColumn(t *testing.T) {
+	w := testWidget{name: "w", kind: widget.Region}
+
+	s := style.For(w).
+		Part("item", style.SpanFull()).
+		Stylesheet().String()
+
+	if !strings.Contains(s, "grid-column: 1 / -1;") {
+		t.Errorf("expected SpanFull to emit grid-column: 1 / -1;, got:\n%s", s)
+	}
+}
+

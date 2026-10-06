@@ -15,6 +15,7 @@ func TestStateAttrTable(t *testing.T) {
 		{Busy, "data-busy", "true"},
 		{Open, "data-open", "true"},
 		{Current, "data-current", "true"},
+		{SpanFull, "data-span-full", "true"},
 	}
 	for _, c := range cases {
 		attr := c.state.Attr()

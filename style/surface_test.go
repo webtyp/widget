@@ -192,3 +192,16 @@ func TestGradientAngle_RepaintsFamilyGradientPerSurface(t *testing.T) {
 		t.Errorf("GradientAngle on a derived surface must be a no-op, got:\n%s", d)
 	}
 }
+
+func TestFieldSurfaceEmitsWhiteBackgroundAndOutlineBorder(t *testing.T) {
+	w := testWidget{name: "f", kind: widget.Region}
+	s := style.For(w).Part("input", style.As(style.Field)).Stylesheet().String()
+
+	if !strings.Contains(s, "background-color: var(--color-background);") {
+		t.Errorf("Field must emit background-color using ColorBackground, got:\n%s", s)
+	}
+	if !strings.Contains(s, "border: 1px solid var(--color-outline);") {
+		t.Errorf("Field must emit border using ColorOutline, got:\n%s", s)
+	}
+}
+

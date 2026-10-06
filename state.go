@@ -43,6 +43,7 @@ const (
 	Busy
 	Open    // deployed / expanded
 	Current // active navigation item
+	SpanFull // spans full width across all columns in a grid
 )
 
 func (s State) String() string {
@@ -61,6 +62,8 @@ func (s State) String() string {
 		return "Open"
 	case Current:
 		return "Current"
+	case SpanFull:
+		return "SpanFull"
 	default:
 		return "Unknown"
 	}
@@ -84,6 +87,8 @@ func (s State) Attr() StateAttr {
 		return StateAttr{key: "data-open", value: "true"}
 	case Current:
 		return StateAttr{key: "data-current", value: "true"}
+	case SpanFull:
+		return StateAttr{key: "data-span-full", value: "true"}
 	default:
 		return StateAttr{}
 	}

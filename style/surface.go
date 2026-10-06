@@ -11,6 +11,7 @@ const (
 	Page Surface = iota
 	Panel
 	Inset
+	Field
 	Primary
 	Secondary
 	Highlight
@@ -34,6 +35,8 @@ func (s Surface) String() string {
 		return "Panel"
 	case Inset:
 		return "Inset"
+	case Field:
+		return "Field"
 	case Primary:
 		return "Primary"
 	case Secondary:
@@ -110,6 +113,12 @@ func (s Surface) resolve() triplet {
 		return triplet{
 			bg: css.ColorSurfaceSunken.EnhancedVar(), text: css.ColorOnSurface.EnhancedVar(), border: borderStyle + css.ColorOutline.EnhancedVar(),
 			bgStatic: css.ColorSurfaceSunken.LightValue(), textStatic: css.ColorOnSurface.LightValue(), borderStatic: borderStyle + css.ColorOutline.LightValue(),
+			borderVar: borderStyle + css.ColorOutline.Var(),
+		}
+	case Field:
+		return triplet{
+			bg: css.ColorBackground.EnhancedVar(), text: css.ColorOnSurface.EnhancedVar(), border: borderStyle + css.ColorOutline.EnhancedVar(),
+			bgStatic: css.ColorBackground.LightValue(), textStatic: css.ColorOnSurface.LightValue(), borderStatic: borderStyle + css.ColorOutline.LightValue(),
 			borderVar: borderStyle + css.ColorOutline.Var(),
 		}
 	case Primary:
@@ -223,7 +232,7 @@ func (s Surface) defaultRadius() Radius {
 	switch s {
 	case Page, Subtle, Bare:
 		return RadiusNone
-	case Panel:
+	case Panel, Field:
 		return RadiusMd
 	default:
 		return RadiusSm

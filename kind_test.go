@@ -6,7 +6,7 @@ import "testing"
 // and a set of chips is ordinary, and it must not surrender its validation
 // state to get either.
 func TestFormAllowsInvalidOpenAndSelected(t *testing.T) {
-	for _, s := range []State{Invalid, Open, Selected} {
+	for _, s := range []State{Invalid, Open, Selected, SpanFull} {
 		if !Form.Allows(s) {
 			t.Errorf("Form.Allows(%s) = false, want true", s.String())
 		}

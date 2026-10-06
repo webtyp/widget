@@ -21,6 +21,7 @@ func TestFieldAnatomy(t *testing.T) {
 	}{
 		{PartLabel, wantRoot + "__label"},
 		{PartInput, wantRoot + "__input"},
+		{PartTextarea, wantRoot + "__textarea"},
 		{PartError, wantRoot + "__error"},
 		{PartRadioGroup, wantRoot + "__radio-group"},
 		{PartRadioOption, wantRoot + "__radio-option"},

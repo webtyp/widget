@@ -94,6 +94,9 @@ func (r rule) Decls(layer widget.Layer) []string {
 			decls = append(decls, "width: "+sizeValue(r.size)+";")
 		}
 	}
+	if r.spanFull {
+		decls = append(decls, "grid-column: 1 / -1;")
+	}
 	// After hasSize, before the intrinsic boxes: a cap is the one sizing
 	// declaration that must survive whatever an inner Scroll() asks for, and
 	// max-block-size cannot be beaten by the height: 100% Scroll() emits.
@@ -224,7 +227,7 @@ func (r rule) emitsNothing(layer widget.Layer) bool {
 	if len(r.Decls(layer)) > 0 {
 		return false
 	}
-	return !r.hasFlow && !r.fill && !r.grow && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.iconCap && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle
+	return !r.hasFlow && !r.fill && !r.grow && !r.spanFull && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.iconCap && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle
 }
 
 func formatRule(selectors []string, decls []string) string {

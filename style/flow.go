@@ -243,3 +243,11 @@ func Sidebar(side Side, width RailWidth, gap Space) Option {
 		r.flowGap = gap
 	}
 }
+
+// SpanFull makes an element span across all columns of a grid container.
+func SpanFull() Option {
+	return func(r *rule) {
+		r.spanFull = true
+	}
+}
+

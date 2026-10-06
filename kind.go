@@ -116,8 +116,12 @@ func (k Kind) Allows(s State) bool {
 	}
 
 	switch k {
-	case Listbox, Tabs, Grid:
+	case Region:
+		return s == SpanFull
+	case Listbox, Tabs:
 		return s == Selected || s == Current
+	case Grid:
+		return s == Selected || s == Current || s == SpanFull
 	case Menu:
 		return s == Open || s == Current
 	case Dialog, Disclosure, Alert:
@@ -135,7 +139,9 @@ func (k Kind) Allows(s State) bool {
 		// picker, a set of filters. That is the state Listbox already carries,
 		// and re-declaring the whole form a Listbox to get it would cost it
 		// Invalid and Open, which the same stylesheet is already using.
-		return s == Invalid || s == Open || s == Selected
+		//
+		// SpanFull marks an input or container that spans all columns in a multi-column form.
+		return s == Invalid || s == Open || s == Selected || s == SpanFull
 	default:
 		return false
 	}
