@@ -60,7 +60,7 @@ func (s *Sheet) emitDevices(sb *fmt.Conv) {
 					devWidSB.WriteString(formatRule([]string{sel + " > *"}, []string{"flex-grow: 1;", "flex-basis: calc((40rem - 100%) * 999);"}))
 					devWidSB.WriteString(formatRule([]string{sel + " > :first-child"}, []string{"flex-grow: var(--ratio);"}))
 				case flowGrid:
-					devWidSB.WriteString(formatRule([]string{sel}, []string{"display: grid;", "gap: var(--gap);", "grid-template-columns: repeat(auto-fit, minmax(min(var(--track), 100%), 1fr));"}))
+					devWidSB.WriteString(formatRule([]string{sel}, []string{"display: grid;", "gap: var(--gap);", gridTrack}))
 				case flowFixedGrid:
 					devWidSB.WriteString(formatRule([]string{sel}, []string{"display: grid;", "gap: var(--gap);", "grid-template-columns: repeat(var(--cols), minmax(0, 1fr));"}))
 				case flowCenter:

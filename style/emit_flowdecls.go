@@ -23,7 +23,7 @@ func flowSelfDecls(r rule) []string {
 	case flowSplit:
 		return []string{"display: flex;", "flex-wrap: wrap;", "gap: var(--gap);"}
 	case flowGrid:
-		return []string{"display: grid;", "gap: var(--gap);", "grid-template-columns: repeat(auto-fit, minmax(min(var(--track), 100%), 1fr));"}
+		return []string{"display: grid;", "gap: var(--gap);", gridTrack}
 	case flowFixedGrid:
 		return []string{"display: grid;", "gap: var(--gap);", "grid-template-columns: repeat(var(--cols), minmax(0, 1fr));"}
 	case flowCenter:

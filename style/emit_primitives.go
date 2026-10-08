@@ -172,7 +172,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 	emitPrimitive(gridSel, []string{
 		"display: grid;",
 		"gap: var(--gap);",
-		"grid-template-columns: repeat(auto-fit, minmax(min(var(--track), 100%), 1fr));",
+		gridTrack,
 	})
 
 	emitPrimitive(fixedGridSel, []string{

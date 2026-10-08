@@ -10,7 +10,7 @@ The substitute for design judgement: you do not choose, you look up.
 |---|---|---|
 | a column of things | `Stack(Space2)` |
 | a row of buttons | `Row(Space1)` |
-| a grid that adapts by itself | `Grid(ColumnNarrow, Space2)` |
+| a grid that adapts to its container, up to N columns | `Grid(3, ColumnNarrow, Space2)` |
 | a grid with an exact column count that never reflows (a calendar week, a fixed strip) | `FixedGrid(7, Space2)` |
 | list plus detail | `Split(SplitTwoThirds, Space3)` |
 | a centred column of text | `Center(Readable)` |

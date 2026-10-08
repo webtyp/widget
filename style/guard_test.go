@@ -72,7 +72,7 @@ func TestNoInventedValues(t *testing.T) {
 		).
 		Part("item1", style.Row(style.Space1), style.Interactive(style.Primary)).
 		Part("item2", style.Split(style.SplitTwoThirds, style.Space2), style.As(style.Panel)).
-		Part("item3", style.Grid(style.ColumnWide, style.Space3), style.As(style.Inset)).
+		Part("item3", style.Grid(2, style.ColumnWide, style.Space3), style.As(style.Inset)).
 		Part("item4", style.Center(style.Third), style.As(style.Secondary)).
 		Part("item5", style.FillCentered(), style.As(style.Highlight)).
 		Part("item6", style.ScrollRow(style.Space4), style.As(style.Success)).

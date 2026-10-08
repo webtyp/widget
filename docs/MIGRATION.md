@@ -473,3 +473,16 @@ token, never the muted text token.
 - [SPECS.md](SPECS.md) — the target API in full.
 - [DESIGN.md](DESIGN.md) — why each change was made.
 - [ARCHITECTURE.md](ARCHITECTURE.md) — the structure it produces.
+
+---
+
+## Grid takes a column cap (2026-10-08)
+
+`Grid(min, gap)` → `Grid(maxCols, min, gap)`. The grid still reflows by its own width, but never
+past `maxCols`; there is no uncapped form and `maxCols < 1` fails `Validate()`. To keep what a
+grid shows today, pass the columns it renders at your widest supported viewport.
+
+| Before | After |
+|---|---|
+| `style.Grid(style.ColumnMedium, style.Space4)` | `style.Grid(N, style.ColumnMedium, style.Space4)` |
+| `FixedGrid(2, gap)` + `On(css.Mobile, …, FixedGrid(1, gap))` to fake reflow | `Grid(2, min, gap)` — reflows by container, no media query |

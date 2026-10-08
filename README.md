@@ -21,7 +21,7 @@ func (m *MasterDetail) WidgetKind() widget.Kind { return widget.Grid }
 
 func (m *MasterDetail) Style() *style.Sheet {
 	return style.For(m).
-		Root(style.Grid(style.ColumnNarrow, style.Space2), style.As(style.Page), style.Scroll()).
+		Root(style.Grid(3, style.ColumnNarrow, style.Space2), style.As(style.Page), style.Scroll()).
 		Part("master", style.Stack(style.Space1), style.As(style.Panel), style.Pad(style.Space3)).
 		Part("detail", style.Stack(style.Space2), style.As(style.Panel), style.Pad(style.Space3)).
 		Part("item",   style.Row(style.Space1),   style.As(style.Subtle), style.Interactive(style.Subtle)).

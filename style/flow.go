@@ -62,15 +62,30 @@ func Split(ratio SplitRatio, gap Space) Option {
 	}
 }
 
-// Grid defines auto-fit + minmax without a fixed number of columns.
-func Grid(min ColumnWidth, gap Space) Option {
+// Grid lays children out in as many columns as fit its CONTAINER's width,
+// each at least min wide, and never more than maxCols. It reflows by the
+// element it styles, not by the viewport: a form in a narrow login card gets
+// one column on a desktop screen, the same form in a wide stage gets maxCols.
+// Use FixedGrid() when the column count is a structural fact that must not
+// reflow.
+//
+// maxCols < 1 fails Validate(): there is no "uncapped" grid.
+func Grid(maxCols int, min ColumnWidth, gap Space) Option {
 	return func(r *rule) {
 		r.hasFlow = true
 		r.flowType = flowGrid
+		r.flowCols = maxCols
 		r.flowWidth = min
 		r.flowGap = gap
 	}
 }
+
+// gridTrack is Grid's column template, written once for every emission path
+// (base rule, device scope, self-contained declarations). A column is the
+// larger of the track minimum (capped by the container so it never
+// overflows) and the width that leaves room for exactly --cols columns —
+// which is what keeps auto-fit from ever creating more than --cols.
+const gridTrack = "grid-template-columns: repeat(auto-fit, minmax(max(min(var(--track), 100%), calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols))), 1fr));"
 
 // FixedGrid lays out children in exactly cols equal-width columns; unlike
 // Grid()'s auto-fit/minmax, the column count never reflows on its own. Use

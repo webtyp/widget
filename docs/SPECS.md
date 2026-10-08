@@ -256,7 +256,7 @@ exactly one path: `As(Y) + Interactive(X)`.
 | `Stack(gap)` | `display:flex; flex-direction:column; gap:var(--gap); min-height:0` — the gap lives on the container, never on a `> * + *` rule that would resolve `var(--gap)` against the child |
 | `Row(gap)` | `display:flex; flex-wrap:wrap; gap:var(--gap); align-items:center` |
 | `Split(r, gap)` | `display:flex; flex-wrap:wrap; gap:var(--gap)`, and `> * { flex-grow:1; flex-basis:calc((40rem - 100%) * 999) }` plus `> :first-child { flex-grow:var(--ratio) }` — stacks below ~40rem of **its own** width, no query and no wrapper element |
-| `Grid(min, gap)` | `display:grid; gap:var(--gap); grid-template-columns:repeat(auto-fit, minmax(min(var(--column),100%),1fr))` |
+| `Grid(maxCols, min, gap)` | `display:grid; gap:var(--gap); --cols:maxCols; grid-template-columns:repeat(auto-fit, minmax(max(min(var(--track),100%), calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols))), 1fr))` — reflows by **its own** width, never past `maxCols`; `maxCols < 1` fails `Validate()` |
 | `FixedGrid(cols, gap)` | `display:grid; gap:var(--gap); grid-template-columns:repeat(var(--cols), minmax(0,1fr))` — unlike `Grid`, the column count never reflows. `--cols` is a value, not a literal `repeat(N,1fr)`: a stylesheet builder works on a zero-value receiver and cannot read an instance field, so a count only known at runtime (a month strip sized by an instance's field) is set the same way any other per-instance value crosses into an otherwise-static sheet — the host overrides `--cols` inline on the element |
 | `Center(max)` | `margin-inline:auto; width:100%; max-width:var(--max-width)` |
 | `FillCentered()` | `display:grid; place-items:center; min-height:100%; width:100%` |

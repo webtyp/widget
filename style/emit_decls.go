@@ -35,6 +35,7 @@ func (r rule) Decls(layer widget.Layer) []string {
 		case flowGrid:
 			decls = append(decls, "--gap: "+spaceVar(r.flowGap)+";")
 			decls = append(decls, "--track: "+columnWidthValue(r.flowWidth)+";")
+			decls = append(decls, "--cols: "+fmt.Sprint(r.flowCols)+";")
 		case flowFixedGrid:
 			decls = append(decls, "--gap: "+spaceVar(r.flowGap)+";")
 			decls = append(decls, "--cols: "+fmt.Sprint(r.flowCols)+";")

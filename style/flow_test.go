@@ -94,3 +94,42 @@ func TestSpanFullEmitsGridColumn(t *testing.T) {
 	}
 }
 
+
+// Grid reflows by its CONTAINER's width (auto-fit), never past maxCols: a
+// form in a narrow login card gets one column on any screen, the same form in
+// a wide stage gets two and never three.
+func TestGridCapsColumnsAndReflowsByContainer(t *testing.T) {
+	w := testWidget{name: "w", kind: widget.Region}
+
+	s := style.For(w).Root(style.Grid(2, style.ColumnMedium, style.Space2)).Stylesheet().String()
+
+	if !strings.Contains(s, "--cols: 2;") {
+		t.Errorf("expected --cols: 2; to be declared, got:\n%s", s)
+	}
+	const track = "grid-template-columns: repeat(auto-fit, minmax(max(min(var(--track), 100%), calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols))), 1fr));"
+	if !strings.Contains(s, track) {
+		t.Errorf("expected the capped auto-fit track, got:\n%s", s)
+	}
+}
+
+func TestGridCapSurvivesDeviceScope(t *testing.T) {
+	w := testWidget{name: "w", kind: widget.Region}
+
+	s := style.For(w).
+		Part("strip", style.Stack(style.Space2)).
+		On(css.Desktop, "strip", style.Grid(3, style.ColumnNarrow, style.Space2)).
+		Stylesheet().String()
+
+	if !strings.Contains(s, "--cols: 3;") {
+		t.Errorf("expected --cols: 3; inside the device scope, got:\n%s", s)
+	}
+}
+
+func TestGridWithoutColumnsFailsValidate(t *testing.T) {
+	w := testWidget{name: "w", kind: widget.Region}
+
+	errs := style.For(w).Root(style.Grid(0, style.ColumnMedium, style.Space2)).Validate()
+	if len(errs) == 0 {
+		t.Fatal("Grid(0, …) must fail Validate(): a grid with no column cap is not a grid")
+	}
+}

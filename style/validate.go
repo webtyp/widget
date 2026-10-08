@@ -54,6 +54,22 @@ func (s *Sheet) validateParts(errs []error) []error {
 		checkVeil(p, pr)
 	}
 
+	// Grid's cap and FixedGrid's count are both --cols: below 1 the track
+	// divides by zero (or a negative) and the browser drops the declaration,
+	// leaving a grid with no columns and no error.
+	checkCols := func(p widget.Part, r rule) {
+		if r.hasFlow && (r.flowType == flowGrid || r.flowType == flowFixedGrid) && r.flowCols < 1 {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Grid()/FixedGrid() needs at least 1 column, got %d", string(s.widget.WidgetName()), string(p), r.flowCols))
+		}
+	}
+	checkCols("", s.rootRule)
+	for p, pr := range s.partRules {
+		checkCols(p, pr)
+	}
+	for k, dr := range s.deviceRules {
+		checkCols(k.part, dr)
+	}
+
 	// DividerBetween() needs a child combinator, which only the base-rule path
 	// can write: On() and the state/cue rules emit a flat declaration list with
 	// no selector of their own. Declaring it there used to be accepted and then
