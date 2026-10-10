@@ -115,6 +115,13 @@ func (s *Sheet) emitDevices(sb *fmt.Conv) {
 				devSB.WriteString("}\n")
 			}
 
+			if r.hasAppBar {
+				sk := stateKey{state: r.appBarState, part: dk.part}
+				attr := sk.state.Attr()
+				stateSel := fmt.Sprintf("%s[%s=\"%s\"]", sel, attr.Key(), attr.Value())
+				devSB.WriteString(formatRule([]string{stateSel}, appBarRevealDecls()))
+			}
+
 			if r.hasRevealed {
 				sk := stateKey{state: r.revealedBy, part: dk.part}
 				attr := sk.state.Attr()

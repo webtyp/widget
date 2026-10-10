@@ -93,6 +93,21 @@ func (s *Sheet) emitReducedMotion(sb *fmt.Conv, parts []widget.Part, autoRotateS
 		addDrawerMotionSel(dr, k.part)
 	}
 
+	addAppBarMotionSel := func(r rule, part widget.Part) {
+		if !r.hasAppBar || r.appBarMotion == MotionNone {
+			return
+		}
+		base := selectorOf(s.widget.WidgetName(), part)
+		motionSel = append(motionSel, base)
+	}
+	addAppBarMotionSel(s.rootRule, "")
+	for _, p := range parts {
+		addAppBarMotionSel(s.partRules[p], p)
+	}
+	for k, dr := range s.deviceRules {
+		addAppBarMotionSel(dr, k.part)
+	}
+
 	if len(motionSel) > 0 {
 		sort.Strings(motionSel)
 		sb.WriteString("@media (prefers-reduced-motion: reduce) {\n")

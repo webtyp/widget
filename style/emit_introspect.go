@@ -33,10 +33,16 @@ func (s *Sheet) StateAttrs() []fmt.KeyValue {
 		}
 	}
 
+	if s.rootRule.hasAppBar {
+		collect(s.rootRule.appBarState)
+	}
 	if s.rootRule.hasRevealed {
 		collect(s.rootRule.revealedBy)
 	}
 	for _, pr := range s.partRules {
+		if pr.hasAppBar {
+			collect(pr.appBarState)
+		}
 		if pr.hasRevealed {
 			collect(pr.revealedBy)
 		}
@@ -52,6 +58,9 @@ func (s *Sheet) StateAttrs() []fmt.KeyValue {
 		collect(k.state)
 	}
 	for _, dr := range s.deviceRules {
+		if dr.hasAppBar {
+			collect(dr.appBarState)
+		}
 		if dr.hasRevealed {
 			collect(dr.revealedBy)
 		}

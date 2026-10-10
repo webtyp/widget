@@ -33,6 +33,10 @@ func (s *Sheet) emitStates(sb *fmt.Conv, parts []widget.Part) (hoverCues []cueEm
 	// animatedKeys marks the shown selectors whose reveal fades: their
 	// @starting-style entry is emitted after the layer closes.
 	animatedKeys := make(map[stateKey]bool)
+	if s.rootRule.hasAppBar {
+		sk := stateKey{state: s.rootRule.appBarState, part: ""}
+		stateDecls[sk] = append(stateDecls[sk], appBarRevealDecls()...)
+	}
 	if s.rootRule.hasRevealed {
 		sk := stateKey{state: s.rootRule.revealedBy, part: ""}
 		if s.rootRule.hasDrawer {
@@ -47,6 +51,10 @@ func (s *Sheet) emitStates(sb *fmt.Conv, parts []widget.Part) (hoverCues []cueEm
 	}
 	for _, p := range parts {
 		pr := s.partRules[p]
+		if pr.hasAppBar {
+			sk := stateKey{state: pr.appBarState, part: p}
+			stateDecls[sk] = append(stateDecls[sk], appBarRevealDecls()...)
+		}
 		if pr.hasRevealed {
 			sk := stateKey{state: pr.revealedBy, part: p}
 			if pr.hasDrawer {

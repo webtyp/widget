@@ -29,6 +29,10 @@ type rule struct {
 	drawerSize   Size
 	drawerMotion Motion
 
+	hasAppBar    bool
+	appBarState  widget.State
+	appBarMotion Motion
+
 	hasEdgeStrip   bool
 	edgeStripScope Scope
 	edgeStripSide  Side

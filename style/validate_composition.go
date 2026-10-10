@@ -31,6 +31,23 @@ func (s *Sheet) validateComposition(errs []error) []error {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
 		}
 	}
+	checkAppBar := func(p widget.Part, r rule) {
+		if !r.hasAppBar {
+			return
+		}
+		if r.hidden {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: AppBar cannot combine with Hide", string(s.widget.WidgetName()), string(p)))
+		}
+		if r.hasRevealed {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: AppBar cannot combine with RevealedBy; AppBar manages its own reveal via its state", string(s.widget.WidgetName()), string(p)))
+		}
+		if r.hasDocked || r.hasDrawer || r.hasBackdrop || r.hasEdgeStrip || r.hasFloatMiddle || r.hasFlyout {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: AppBar cannot combine with out-of-flow positioning (Docked/Drawer/Backdrop/EdgeStrip/FloatMiddle/Flyout)", string(s.widget.WidgetName()), string(p)))
+		}
+		if r.controlBox {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: AppBar already owns its block size; drop ControlBox", string(s.widget.WidgetName()), string(p)))
+		}
+	}
 	// Button already paints and already claims the control height. Saying
 	// either again is not additive: the second Interactive silently overwrites
 	// the surface Button chose, and a second min-height from the same token
@@ -302,15 +319,18 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	checkHidden("", s.rootRule)
 	checkIconCap("", s.rootRule)
 	checkHandRolledCap("", s.rootRule)
+	checkAppBar("", s.rootRule)
 	for p, pr := range s.partRules {
 		checkPosition(p, pr)
 		checkButton(p, pr)
 		checkHidden(p, pr)
 		checkIconCap(p, pr)
 		checkHandRolledCap(p, pr)
+		checkAppBar(p, pr)
 	}
 	for k, dr := range s.deviceRules {
 		checkPosition(k.part, dr)
+		checkAppBar(k.part, dr)
 	}
 
 	// An IconBox glyph nested inside an IconCap cap (declared via Within):

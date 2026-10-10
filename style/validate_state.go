@@ -17,6 +17,18 @@ func (s *Sheet) validateStates(errs []error) []error {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: state %s is not meaningful for kind %s", string(s.widget.WidgetName()), string(k.part), k.state.String(), s.widget.WidgetKind().String()))
 		}
 	}
+	checkAppBarState := func(p widget.Part, r rule) {
+		if r.hasAppBar && !s.widget.WidgetKind().Allows(r.appBarState) {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: state %s is not meaningful for kind %s", string(s.widget.WidgetName()), string(p), r.appBarState.String(), s.widget.WidgetKind().String()))
+		}
+	}
+	checkAppBarState("", s.rootRule)
+	for p, pr := range s.partRules {
+		checkAppBarState(p, pr)
+	}
+	for dk, dr := range s.deviceRules {
+		checkAppBarState(dk.part, dr)
+	}
 
 	// Inactive is the only surface with no interaction family: interacting
 	// with the deliberately-dead shade is always a mistake. Page stays legal —

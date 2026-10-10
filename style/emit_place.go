@@ -18,6 +18,10 @@ import (
 func (r rule) placementDecls(layer widget.Layer) []string {
 	var decls []string
 
+	if r.hasAppBar {
+		decls = append(decls, appBarBaseDecls(r.appBarMotion)...)
+	}
+
 	if r.hasBackdrop {
 		if r.backdropScope == Viewport {
 			decls = append(decls, "position: fixed;")
