@@ -129,6 +129,28 @@ func TestCueWithinHoverScopesToFinePointer(t *testing.T) {
 	}
 }
 
+func TestCueWithinHoverWithRevealedBy(t *testing.T) {
+	w := testWidget{name: "pd", kind: widget.Menu}
+	s := style.For(w).
+		Part("menu", style.Stack(style.Space1)).
+		Part("submenu", style.Stack(style.Space1), style.Hide()).
+		CueWithinHover(widget.Hover, "menu", "submenu", style.RevealedBy(widget.Open)).
+		Stylesheet().String()
+
+	mediaIdx := strings.Index(s, "@media (hover: hover)")
+	if mediaIdx < 0 {
+		t.Fatalf("expected the fine-pointer gate, got:\n%s", s)
+	}
+	block := s[mediaIdx:]
+	wantSel := `.pd__menu:hover .pd__submenu[data-open="true"]`
+	if !strings.Contains(block, wantSel) {
+		t.Errorf("expected %q inside hover media query, got:\n%s", wantSel, block)
+	}
+	if !strings.Contains(block, "display: flex;") {
+		t.Errorf("expected revealed display: flex inside hover rule, got:\n%s", block)
+	}
+}
+
 func TestValidateCueWithinHoverContainerUndeclared(t *testing.T) {
 	w := testWidget{name: "w", kind: widget.Menu}
 	sheet := style.For(w).

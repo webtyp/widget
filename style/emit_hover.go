@@ -25,6 +25,7 @@ func (s *Sheet) emitHover(sb *fmt.Conv, hoverCues []cueEmission) {
 	type cueWithinHoverEntry struct {
 		key   cueWithinKey
 		decls []string
+		rule  rule
 	}
 	var sortedCueWithinHover []cueWithinHoverEntry
 	for k, r := range s.cueWithinHover {
@@ -32,12 +33,24 @@ func (s *Sheet) emitHover(sb *fmt.Conv, hoverCues []cueEmission) {
 		if r.hasFlow {
 			d = append(d, flowSelfDecls(r)...)
 		}
-		d = append(d, r.Decls(s.widget.WidgetKind().Layer())...)
+		if r.hasRevealed && !r.hasDrawer {
+			reveal := r.flowType
+			if !r.hasFlow {
+				reveal = s.partRules[k.part].flowType
+			}
+			d = append(d, "display: "+displayFor(reveal)+";")
+		}
+		for _, decl := range r.Decls(s.widget.WidgetKind().Layer()) {
+			if r.hasRevealed && decl == "display: none;" {
+				continue
+			}
+			d = append(d, decl)
+		}
 		d = append(d, primitiveDecls(r)...)
 		if len(d) == 0 {
 			continue
 		}
-		sortedCueWithinHover = append(sortedCueWithinHover, cueWithinHoverEntry{key: k, decls: d})
+		sortedCueWithinHover = append(sortedCueWithinHover, cueWithinHoverEntry{key: k, decls: d, rule: r})
 	}
 	sort.Slice(sortedCueWithinHover, func(i, j int) bool {
 		a, b := sortedCueWithinHover[i].key, sortedCueWithinHover[j].key
@@ -59,6 +72,10 @@ func (s *Sheet) emitHover(sb *fmt.Conv, hoverCues []cueEmission) {
 		for _, sc := range sortedCueWithinHover {
 			sel := selectorOf(s.widget.WidgetName(), sc.key.container) + cuePseudo(sc.key.cue) +
 				" " + selectorOf(s.widget.WidgetName(), sc.key.part)
+			if sc.rule.hasRevealed {
+				attr := sc.rule.revealedBy.Attr()
+				sel += fmt.Sprintf("[%s=\"%s\"]", attr.Key(), attr.Value())
+			}
 			hoverSB.WriteString(formatRule([]string{sel}, sc.decls))
 		}
 		sb.WriteString("@media " + css.FinePointer.Query() + " {\n")
