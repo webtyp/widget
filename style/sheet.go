@@ -41,11 +41,13 @@ type rule struct {
 	meterThickness Space
 	centerSelf     bool
 
-	centerContent  bool
-	startContent   bool
-	controlBox     bool
-	iconCap        bool
-	logoBox        bool
+	centerContent     bool
+	startContent      bool
+	controlBox        bool
+	controlBoxCompact bool
+	iconCap           bool
+	iconCapCompact    bool
+	logoBox           bool
 	chipBox        bool
 	buttonBox      bool
 	visuallyHidden bool

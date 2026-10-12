@@ -27,7 +27,7 @@ func AppBar(st widget.State, m Motion) Option {
 }
 
 func appBarBlockSizeExpr() string {
-	return "calc(" + css.ControlHeight.Var() + " + 2 * " + spaceVar(Space1) + ")"
+	return spaceVar(Space12)
 }
 
 func appBarBaseDecls(m Motion) []string {

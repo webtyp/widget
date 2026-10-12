@@ -80,7 +80,7 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	// mistake; a glyph part nested inside a cap part (via Within) carrying
 	// IconBox is the same mistake across two parts.
 	checkIconCap := func(p widget.Part, r rule) {
-		if r.iconCap && r.hasIcon {
+		if (r.iconCap || r.iconCapCompact) && r.hasIcon {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: IconCap already sizes the glyph; drop IconBox", string(s.widget.WidgetName()), string(p)))
 		}
 	}
@@ -96,10 +96,10 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	// its centring would fight the text layout. Glyph caps centre; text
 	// blocks start-align.
 	checkHandRolledCap := func(p widget.Part, r rule) {
-		if r.iconCap {
+		if r.iconCap || r.iconCapCompact {
 			return
 		}
-		if r.hasFlow && r.flowType == flowMediaBox && r.flowAspect == AspectSquare && r.controlBox && !r.startContent {
+		if r.hasFlow && r.flowType == flowMediaBox && r.flowAspect == AspectSquare && (r.controlBox || r.controlBoxCompact) && !r.startContent {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: hand-rolled icon cap (MediaBox(AspectSquare) + ControlBox); use IconCap()", string(s.widget.WidgetName()), string(p)))
 		}
 	}
@@ -343,7 +343,7 @@ func (s *Sheet) validateComposition(errs []error) []error {
 		}
 		container, ok := s.within[p]
 		for ok && container != "" {
-			if cr, exists := s.partRules[container]; exists && cr.iconCap {
+			if cr, exists := s.partRules[container]; exists && (cr.iconCap || cr.iconCapCompact) {
 				errs = append(errs, fmt.Errf("sheet %s: part %q: IconBox under IconCap part %q is silently overridden by the cap's glyph rule; drop IconBox", string(s.widget.WidgetName()), string(p), string(container)))
 				break
 			}

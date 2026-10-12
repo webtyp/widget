@@ -67,7 +67,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 				masterDetailInfos = append(masterDetailInfos, masterDetailInfo{sel: sel, detail: r.flowDetail})
 			}
 		}
-		if r.iconCap {
+		if r.iconCap || r.iconCapCompact {
 			iconCapSel = append(iconCapSel, sel)
 		}
 		if r.fill {

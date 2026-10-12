@@ -95,6 +95,11 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 	}
 
+	if r.controlBoxCompact {
+		decls = append(decls, "min-height: "+css.ControlHeightCompact.Var()+";")
+		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
+	}
+
 	// The cap: a --control-height square that never shrinks and centres its
 	// glyph. aspect-ratio (not a second explicit dimension) is what keeps it
 	// square when the row it sits in grows taller than one control — the same
@@ -112,6 +117,18 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		decls = append(decls, "aspect-ratio: 1;")
 		decls = append(decls, "overflow: hidden;")
 		decls = append(decls, "min-height: "+css.ControlHeight.Var()+";")
+		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
+		decls = append(decls, "flex-shrink: 0;")
+		decls = append(decls, "flex-grow: 0;")
+		decls = append(decls, "display: flex;")
+		decls = append(decls, "align-items: center;")
+		decls = append(decls, "justify-content: center;")
+	}
+
+	if r.iconCapCompact {
+		decls = append(decls, "aspect-ratio: 1;")
+		decls = append(decls, "overflow: hidden;")
+		decls = append(decls, "min-height: "+css.ControlHeightCompact.Var()+";")
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 		decls = append(decls, "flex-shrink: 0;")
 		decls = append(decls, "flex-grow: 0;")

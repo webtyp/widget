@@ -165,6 +165,14 @@ func ControlBox() Option {
 	}
 }
 
+// ControlBoxCompact gives the element the compact control height, the rhythm
+// for touch-floor interactive rows and mobile viewports (2.75rem / 44px).
+func ControlBoxCompact() Option {
+	return func(r *rule) {
+		r.controlBoxCompact = true
+	}
+}
+
 // Button is the one recipe for a button: the shared control height, inline
 // padding for its label, and a box that neither stretches to its container nor
 // shrinks under pressure. s paints it — Primary, Secondary, Danger, Subtle —
@@ -231,6 +239,14 @@ func LogoBox() Option {
 func IconCap() Option {
 	return func(r *rule) {
 		r.iconCap = true
+	}
+}
+
+// IconCapCompact gives the element the compact icon cap: a square of
+// --control-height-compact (44px) that never shrinks and centres its glyph.
+func IconCapCompact() Option {
+	return func(r *rule) {
+		r.iconCapCompact = true
 	}
 }
 

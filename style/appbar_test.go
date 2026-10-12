@@ -23,11 +23,10 @@ func TestAppBar_BaseAndReveal(t *testing.T) {
 		"display: flex;",
 		"align-items: center;",
 		"flex-shrink: 0;",
-		"block-size: calc(var(--control-height",
-		"2 * var(--space-1",
+		"block-size: var(--space-12",
 		"padding-inline: var(--space-3",
 		"border-radius: 0;",
-		"margin-block-start: calc(-1 * calc(var(--control-height",
+		"margin-block-start: calc(-1 * var(--space-12",
 		"transition: margin-block-start var(--duration-base",
 		"var(--ease-in-out",
 		`.w[data-open="true"] {`,
@@ -51,7 +50,7 @@ func TestAppBar_MotionNone(t *testing.T) {
 	if strings.Contains(s, "transition: margin-block-start") {
 		t.Errorf("MotionNone must not emit transition, got:\n%s", s)
 	}
-	if !strings.Contains(s, "margin-block-start: calc(-1 * calc(var(--control-height") {
+	if !strings.Contains(s, "margin-block-start: calc(-1 * var(--space-12") {
 		t.Errorf("MotionNone still retracts by negative margin, got:\n%s", s)
 	}
 	if !strings.Contains(s, "margin-block-start: 0;") {
