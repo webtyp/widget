@@ -198,6 +198,10 @@ to stay silent without it.
 
 ---
 
+### 6.8 Recipes
+
+- `Heading()` — the one section title inside content; the screen title is the platform header's.
+
 ## 7. Emission guarantees
 
 1. **Fixed cascade layers**, declared in a stable order: `tokens, primitives,
