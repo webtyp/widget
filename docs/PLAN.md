@@ -2,8 +2,10 @@
 PLAN: "feat(style): Heading recipe — the one section title of the app"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 2279594303412389757
+PR: https://github.com/webtyp/widget/pull/8
+REVIEWED_COMMIT: 80282cc49691a150edb5917556aac54245912a73
 ---
 
 > Read AGENTS.md at the repo root before any change.
