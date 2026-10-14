@@ -34,6 +34,10 @@ func main() {
 }
 ```
 
+## Recipes
+
+- `Heading()` — the one section title inside content; the screen title is the platform header's.
+
 ## Documentation
 
 - [AGENTS.md](AGENTS.md) — constraints for anyone (human or agent) changing this library: the WASM boundary, zero escape, never invent a value, and the SSR contract every style builder must satisfy.

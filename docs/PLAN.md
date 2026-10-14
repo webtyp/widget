@@ -76,3 +76,6 @@ File `style/heading_test.go` (`//go:build !wasm`, package `style_test`), followi
 | 1 | `style/heading.go` |
 | 2 | `style/heading_test.go` |
 | 3 | `README.md`, `docs/ARCHITECTURE.md` |
+
+## Executor notes
+- Omitted `style/heading_test.go` (Stage 2) because tests in this repository cover only behaviour, never emitted CSS for combined properties, per the user's updated instruction.
