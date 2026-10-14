@@ -2,6 +2,8 @@
 PLAN: "feat(style): Heading recipe — the one section title of the app"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 2279594303412389757
 ---
 
 > Read AGENTS.md at the repo root before any change.
