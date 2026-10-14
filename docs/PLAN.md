@@ -56,15 +56,9 @@ func Heading() Option {
   the existing composition validation if such a rule exists for duplicate setters; if none exists, do
   **not** add one in this plan.
 
-### Stage 2 — tests
+### Stage 2 — no new test
 
-File `style/heading_test.go` (`//go:build !wasm`, package `style_test`), following `appbar_test.go`
-(`testWidget{name: "w", kind: widget.Region}`):
-
-- `TestHeading_EmitsSizeAndWeight`: `style.For(w).Part(widget.Part("title"), style.Heading()).Stylesheet().String()`
-  contains the same `font-size` and `font-weight` declarations that
-  `style.FontSize(style.TextLg)` + `style.FontWeight(style.WeightBold)` emit on an identical part
-  (compare the two stylesheets' strings, not literal token names).
+`Heading()` only composes two existing options; the repo's stylesheet validation already covers it. Do not add a test that asserts emitted declarations.
 
 ### Stage 3 — docs
 
@@ -74,5 +68,4 @@ File `style/heading_test.go` (`//go:build !wasm`, package `style_test`), followi
 | Stage | Files |
 |---|---|
 | 1 | `style/heading.go` |
-| 2 | `style/heading_test.go` |
 | 3 | `README.md`, `docs/ARCHITECTURE.md` |
