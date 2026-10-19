@@ -253,3 +253,59 @@ func TestDeclaredContainmentIsNotOverRejected(t *testing.T) {
 		t.Errorf("an unrelated docked part must not trip the chain check, got: %v", errs)
 	}
 }
+
+func TestMotionConflictsAreDiagnosed(t *testing.T) {
+	w := testWidget{name: "avatar", kind: widget.Region}
+
+	cases := []struct {
+		name string
+		opts []style.Option
+		msg  string
+	}{
+		{
+			"Rotate and Wave",
+			[]style.Option{style.Rotate(style.TurnQuarter), style.Wave()},
+			"Rotate, Wave, and Pulse all set transform; use only one",
+		},
+		{
+			"Wave and Pulse",
+			[]style.Option{style.Wave(), style.Pulse()},
+			"Rotate, Wave, and Pulse all set transform; use only one", // Note: It triggers this first since both set transform and transform-origin
+		},
+		{
+			"Wave and Pivot",
+			[]style.Option{style.Wave(), style.Pivot("top")},
+			"Wave, Pulse, and Pivot all set transform-origin; use only one",
+		},
+		{
+			"Pulse and Pivot",
+			[]style.Option{style.Pulse(), style.Pivot("top")},
+			"Wave, Pulse, and Pivot all set transform-origin; use only one",
+		},
+		{
+			"Wave and OnEdge",
+			[]style.Option{style.Wave(), style.OnEdge(style.EdgeTop, style.SideStart, style.SpaceNone, style.SpaceNone)},
+			"Rotate/Wave/Pulse cannot combine with OnEdge/Drawer/FloatMiddle — all own transform",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			sheet := style.For(w).Part("p", c.opts...)
+			errs := sheet.Validate()
+			if len(errs) == 0 {
+				t.Fatalf("Expected validation error, got none")
+			}
+			found := false
+			for _, err := range errs {
+				if strings.Contains(err.Error(), c.msg) {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("Expected error containing %q, got:\n%v", c.msg, errs)
+			}
+		})
+	}
+}

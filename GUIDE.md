@@ -24,6 +24,9 @@ The substitute for design judgement: you do not choose, you look up.
 | a fixed nav rail beside the content | `Sidebar(SideEnd, RailNarrow, SpaceNone)` |
 | a button holding only an icon | `CenterContent()` |
 | a chevron (or disclosure arrow) that flips when its host opens | `Rotate(TurnNone)` on the base rule + `When(widget.Open, "icon", Rotate(TurnHalf))`, with `Animate(MotionBase)` so the turn is a transition — the rotation IS the state, never a class toggled by hand |
+| an interactive vector part with continuous back-and-forth movement | `Wave()` |
+| an interactive vector part with a breathing scale pulse | `Pulse()` |
+| an animated part anchored to a specific origin | `Pivot("origin string")` |
 | a fixed-size item (an `IconBox()`) centered inside a wider row/grid track | `CenterSelf()` |
 | a runtime fill level — an occupancy bar, a progress meter | `Meter(Space1)`, host sets `--meter-fill:N%;` per instance |
 | a floating action pinned to a corner | `Anchor()` on the panel + `Docked(Parent, EdgeBottom, SideEnd, Space4)` |

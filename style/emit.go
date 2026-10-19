@@ -53,7 +53,52 @@ func (s *Sheet) Stylesheet() *css.Stylesheet {
 	s.emitDevices(sb)
 	s.emitReducedMotion(sb, parts, autoRotateSels)
 
+	hasWave, hasPulse := s.hasWaveOrPulse()
+	if hasWave {
+		sb.WriteString(waveKeyframesCSS())
+	}
+	if hasPulse {
+		sb.WriteString(pulseKeyframesCSS())
+	}
+
 	return css.NewStylesheet(css.Raw(sb.GetString(fmt.BuffOut)))
+}
+
+func (s *Sheet) hasWaveOrPulse() (wave bool, pulse bool) {
+	check := func(r rule) {
+		if r.hasWave {
+			wave = true
+		}
+		if r.hasPulse {
+			pulse = true
+		}
+	}
+	check(s.rootRule)
+	for _, r := range s.partRules {
+		check(r)
+	}
+	for _, r := range s.stateRules {
+		check(r)
+	}
+	for _, r := range s.cueRules {
+		check(r)
+	}
+	for _, r := range s.cueWithin {
+		check(r)
+	}
+	for _, r := range s.cueWithinHover {
+		check(r)
+	}
+	for _, r := range s.cueAcross {
+		check(r)
+	}
+	for _, r := range s.stateAcross {
+		check(r)
+	}
+	for _, r := range s.deviceRules {
+		check(r)
+	}
+	return
 }
 
 // sortedParts is the deterministic part order every section iterates in: the

@@ -69,3 +69,8 @@ In `style/emit_flowdecls.go` and `style/emit_primitives.go`:
 ## Acceptance
 - `gotest` passes completely.
 - Drift guard and WASM boundary assertions pass.
+
+## Executor notes
+- Added the `Wave`, `Pulse`, and `Pivot` visual options as requested.
+- Updated `Validate()` logic to prevent concurrent configurations of options that share conflicting transform definitions, e.g., using `Wave` and `Pivot` on the same `Part()` element.
+- Added tests matching `Wave` and `Pulse` keyframe and class emission structures.
