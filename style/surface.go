@@ -25,6 +25,8 @@ const (
 	Subtle
 	Bare
 	Inactive
+	AccentOutline
+	Inverse
 )
 
 func (s Surface) String() string {
@@ -63,6 +65,10 @@ func (s Surface) String() string {
 		return "Bare"
 	case Inactive:
 		return "Inactive"
+	case AccentOutline:
+		return "AccentOutline"
+	case Inverse:
+		return "Inverse"
 	default:
 		return "Unknown"
 	}
@@ -93,6 +99,12 @@ type triplet struct {
 	borderStatic string
 
 	borderVar string
+
+	// inset paints a state border's shadow ring INSIDE the box instead of
+	// outside it (see ringShadow). Set only by AccentOutline, whose ring sits
+	// on top of whatever the part already shows and must not be clipped by a
+	// scrolling or overflow-hidden ancestor.
+	inset bool
 }
 
 // resolve translates a Surface to its corresponding triplet of styles.
@@ -206,6 +218,26 @@ func (s Surface) resolve() triplet {
 			bg: css.ColorSurface.EnhancedVar(), text: css.ColorMuted.EnhancedVar(),
 			bgStatic: css.ColorSurface.LightValue(), textStatic: css.ColorMuted.LightValue(),
 		}
+	// AccentOutline is a ring and nothing else: no background, no text colour.
+	// It is for a state that must show on a part without repainting what is
+	// inside it — a hovered list row keeps its own fill and label, the accent
+	// only outlines it. A fill is the confirmed state (Accent); an outline is a
+	// passing one.
+	case AccentOutline:
+		return triplet{
+			border: borderStyle + css.ColorAccent.EnhancedVar(), borderStatic: borderStyle + css.ColorAccent.LightValue(),
+			borderVar: borderStyle + css.ColorAccent.Var(),
+			inset:     true,
+		}
+	// Inverse is the page turned inside out: body ink as the fill, the page
+	// colour as the text, in both themes. It is the surface of a message that
+	// floats over everything else (a toast): visible on a primary header, on
+	// white content and on a dark theme alike, which no brand colour is.
+	case Inverse:
+		return triplet{
+			bg: css.ColorOnSurface.EnhancedVar(), text: css.ColorBackground.EnhancedVar(),
+			bgStatic: css.ColorOnSurface.LightValue(), textStatic: css.ColorBackground.LightValue(),
+		}
 	default:
 		return triplet{}
 	}
@@ -230,7 +262,7 @@ func (r rule) resolvedRadius() Radius {
 // defaultRadius returns the default radius associated with a Surface.
 func (s Surface) defaultRadius() Radius {
 	switch s {
-	case Page, Subtle, Bare:
+	case Page, Subtle, Bare, AccentOutline:
 		return RadiusNone
 	case Panel, Field:
 		return RadiusMd

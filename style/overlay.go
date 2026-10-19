@@ -113,6 +113,18 @@ func Docked(scope Scope, edge Edge, side Side, gap Space) Option {
 	}
 }
 
+// DockedClear adds distance, on the block axis only, between a Docked part and
+// its edge — the room to keep clear of chrome that lives along that edge (an
+// app bar the part must not cover). Docked's own gap is the same on both axes;
+// this is what lets a toast sit the usual distance from the side edge and still
+// start below the header. It is added to Docked's gap, never replaces it.
+func DockedClear(s Space) Option {
+	return func(r *rule) {
+		r.hasDockedClear = true
+		r.dockedClear = s
+	}
+}
+
 // EdgeStrip pins the element to one full inline edge of its Scope — the
 // entire block-axis span (inset-block: 0) plus one inline edge — and, unlike
 // Drawer(), sizes itself to its own content/padding instead of forcing a

@@ -48,20 +48,22 @@ type rule struct {
 	iconCap           bool
 	iconCapCompact    bool
 	logoBox           bool
-	chipBox        bool
-	buttonBox      bool
-	visuallyHidden bool
-	hasInteractive bool
-	capitalize     bool
+	chipBox           bool
+	buttonBox         bool
+	visuallyHidden    bool
+	hasInteractive    bool
+	capitalize        bool
 
 	hasGlyph bool
 	glyph    Surface
 
-	hasDocked   bool
-	dockedScope Scope
-	dockedEdge  Edge
-	dockedSide  Side
-	dockedGap   Space
+	hasDocked      bool
+	dockedScope    Scope
+	dockedEdge     Edge
+	dockedSide     Side
+	dockedGap      Space
+	hasDockedClear bool
+	dockedClear    Space
 
 	hasFloatMiddle  bool
 	floatMiddleSide Side
@@ -111,6 +113,8 @@ type rule struct {
 	// lo activó. Es lo que hace que As() emita un anillo de box-shadow (ver
 	// boxShadowDecls) en vez de border.
 	overlay bool
+
+	hasPicker bool
 
 	hasPad bool
 	pad    Space

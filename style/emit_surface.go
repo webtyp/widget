@@ -116,17 +116,17 @@ func boxShadowDecls(r rule, t triplet) []string {
 			// A bare var() with its hex fallback is safe on every engine: a
 			// legacy browser cannot compute --color-outline's light-dark()
 			// :root value, so the fallback applies.
-			return []string{"box-shadow: " + ringShadow(t.borderVar) + ", " + elevationVar(r.raise) + ";"}
+			return []string{"box-shadow: " + ringShadow(t.borderVar, t.inset) + ", " + elevationVar(r.raise) + ";"}
 		}
 		if t.borderStatic != "" {
 			// Static ring first, enhanced ring second — the same double
 			// declaration every other themed color uses.
 			return []string{
-				"box-shadow: " + ringShadow(t.borderStatic) + ";",
-				"box-shadow: " + ringShadow(t.border) + ";",
+				"box-shadow: " + ringShadow(t.borderStatic, t.inset) + ";",
+				"box-shadow: " + ringShadow(t.border, t.inset) + ";",
 			}
 		}
-		return []string{"box-shadow: " + ringShadow(t.border) + ";"}
+		return []string{"box-shadow: " + ringShadow(t.border, t.inset) + ";"}
 	}
 	if r.hasRaise {
 		return []string{"box-shadow: " + elevationVar(r.raise) + ";"}
@@ -135,7 +135,12 @@ func boxShadowDecls(r rule, t triplet) []string {
 }
 
 // ringShadow turns a border value ("1px solid <color>") into the shadow ring
-// a state border paints with: 0 0 0 1px <color>.
-func ringShadow(border string) string {
-	return "0 0 0 1px " + strings.TrimPrefix(border, borderStyle)
+// a state border paints with: 0 0 0 1px <color>, or the same ring inside the
+// box when inset.
+func ringShadow(border string, inset bool) string {
+	ring := "0 0 0 1px " + strings.TrimPrefix(border, borderStyle)
+	if inset {
+		return "inset " + ring
+	}
+	return ring
 }

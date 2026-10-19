@@ -240,7 +240,7 @@ func (r rule) emitsNothing(layer widget.Layer) bool {
 	if len(r.Decls(layer)) > 0 {
 		return false
 	}
-	return !r.hasFlow && !r.fill && !r.grow && !r.spanFull && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.controlBoxCompact && !r.iconCap && !r.iconCapCompact && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasWave && !r.hasPulse && !r.hasPivot && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle
+	return !r.hasFlow && !r.fill && !r.grow && !r.spanFull && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.controlBoxCompact && !r.iconCap && !r.iconCapCompact && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasWave && !r.hasPulse && !r.hasPivot && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle && !r.hasPicker
 }
 
 func formatRule(selectors []string, decls []string) string {

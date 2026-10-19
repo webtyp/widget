@@ -50,6 +50,7 @@ func (s *Sheet) Stylesheet() *css.Stylesheet {
 	s.emitWidgets(sb, parts)
 	hoverCues := s.emitStates(sb, parts)
 	s.emitHover(sb, hoverCues)
+	s.emitPickers(sb, parts)
 	s.emitDevices(sb)
 	s.emitReducedMotion(sb, parts, autoRotateSels)
 

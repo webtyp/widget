@@ -213,10 +213,14 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		// before survive, and an over-constrained absolute box collapses instead
 		// of moving. That is what happened when this overrode a Flyout on one
 		// device — top and bottom were both live and the panel became 8x2.
+		blockGap := spaceVar(r.dockedGap)
+		if r.hasDockedClear {
+			blockGap = "calc(" + spaceVar(r.dockedGap) + " + " + spaceVar(r.dockedClear) + ")"
+		}
 		if r.dockedEdge == EdgeTop {
-			decls = append(decls, "inset-block-start: "+spaceVar(r.dockedGap)+";", "inset-block-end: auto;")
+			decls = append(decls, "inset-block-start: "+blockGap+";", "inset-block-end: auto;")
 		} else {
-			decls = append(decls, "inset-block-end: "+spaceVar(r.dockedGap)+";", "inset-block-start: auto;")
+			decls = append(decls, "inset-block-end: "+blockGap+";", "inset-block-start: auto;")
 		}
 		if r.dockedSide == SideStart {
 			decls = append(decls, "inset-inline-start: "+spaceVar(r.dockedGap)+";", "inset-inline-end: auto;")

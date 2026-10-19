@@ -18,9 +18,13 @@ const NameField = Name(fieldClassName)
 // fieldClassName + "__label" and never collides with the "label" of another
 // widget.
 const (
-	PartLabel          = Part("label")
-	PartInput          = Part("input")
-	PartTextarea       = Part("textarea")
+	PartLabel    = Part("label")
+	PartInput    = Part("input")
+	PartTextarea = Part("textarea")
+	// PartSelect is carried by a <select> besides PartInput: the native option
+	// list (its picker) can only be styled on a select, so the rules for it
+	// must not reach the text inputs that share PartInput.
+	PartSelect         = Part("select")
 	PartError          = Part("error")
 	PartRadioGroup     = Part("radio-group")
 	PartRadioOption    = Part("radio-option")

@@ -69,6 +69,25 @@ func TestStateSurfaceRepaintsBorderAsRing(t *testing.T) {
 	if strings.Contains(hoverRule, "outline:") {
 		t.Errorf("a state rule must not emit outline, got:\n%s", hoverRule)
 	}
+
+	// AccentOutline is the same ring drawn INSIDE the box and repainting
+	// nothing: a hovered row keeps its own fill and label, and the ring cannot
+	// be sheared by a clipping ancestor.
+	s = style.For(w).
+		Part("x", style.As(style.Page)).
+		Cue(widget.Hover, "x", style.As(style.AccentOutline)).
+		Stylesheet().String()
+	idx = strings.Index(s, ".w__x:hover")
+	if idx < 0 {
+		t.Fatalf("expected a :hover rule, got:\n%s", s)
+	}
+	outline := s[idx : idx+strings.Index(s[idx:], "}")]
+	if !strings.Contains(outline, "inset 0 0 0 1px") {
+		t.Errorf("AccentOutline must draw an inset ring, got:\n%s", outline)
+	}
+	if strings.Contains(outline, "background") || strings.Contains(outline, "color:") {
+		t.Errorf("AccentOutline must not repaint the part, got:\n%s", outline)
+	}
 }
 
 func TestStateRingComposesWithElevation(t *testing.T) {
