@@ -3,8 +3,10 @@ PLAN: "feat(style): add motion recipes Pivot, Wave, and Pulse for animated SVG p
 TAG: v0.0.86
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 6889141225767599147
+PR: https://github.com/webtyp/widget/pull/9
+REVIEWED_COMMIT: ea5ed61b8fdbb29c819f204dba8c9e5f9c10ae89
 ---
 
 > Read AGENTS.md at the repo root before any change.
@@ -69,3 +71,8 @@ In `style/emit_flowdecls.go` and `style/emit_primitives.go`:
 ## Acceptance
 - `gotest` passes completely.
 - Drift guard and WASM boundary assertions pass.
+
+## Executor notes
+- Added the `Wave`, `Pulse`, and `Pivot` visual options as requested.
+- Updated `Validate()` logic to prevent concurrent configurations of options that share conflicting transform definitions, e.g., using `Wave` and `Pivot` on the same `Part()` element.
+- Added tests matching `Wave` and `Pulse` keyframe and class emission structures.

@@ -160,6 +160,11 @@ type rule struct {
 	hasMotion bool
 	motion    Motion
 
+	hasPivot bool
+	pivot    string
+	hasWave  bool
+	hasPulse bool
+
 	hasRotate bool
 	rotate    Turn
 

@@ -127,6 +127,18 @@ func (r rule) Decls(layer widget.Layer) []string {
 	if r.hasRotate {
 		decls = append(decls, "transform: rotate("+turnValue(r.rotate)+");")
 	}
+	if r.hasPivot {
+		decls = append(decls, "transform-box: fill-box;", "transform-origin: "+r.pivot+";")
+	} else if r.hasWave {
+		decls = append(decls, "transform-box: fill-box;", "transform-origin: 50% 100%;")
+	} else if r.hasPulse {
+		decls = append(decls, "transform-box: fill-box;", "transform-origin: center;")
+	}
+	if r.hasWave {
+		decls = append(decls, "animation: tw-wave 1s ease-in-out infinite;")
+	} else if r.hasPulse {
+		decls = append(decls, "animation: tw-pulse 2s ease-in-out infinite;")
+	}
 
 	decls = append(decls, r.placementDecls(layer)...)
 
@@ -228,7 +240,7 @@ func (r rule) emitsNothing(layer widget.Layer) bool {
 	if len(r.Decls(layer)) > 0 {
 		return false
 	}
-	return !r.hasFlow && !r.fill && !r.grow && !r.spanFull && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.controlBoxCompact && !r.iconCap && !r.iconCapCompact && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle
+	return !r.hasFlow && !r.fill && !r.grow && !r.spanFull && !r.pushEnd && !r.scroll && !r.keepSize && !r.edgeToEdge && !r.hideOverflow && !r.hasIcon && !r.controlBox && !r.controlBoxCompact && !r.iconCap && !r.iconCapCompact && !r.logoBox && !r.chipBox && !r.buttonBox && !r.visuallyHidden && !r.hasGlyph && !r.hasPadEdge && !r.hasChipSeat && !r.hasPadInline && !r.startContent && !r.shown && !r.hasRotate && !r.hasWave && !r.hasPulse && !r.hasPivot && !r.hasCapped && !r.hasDivider && !r.hasDividerBelow && !r.hasDividerBetween && !r.hasFloatMiddle
 }
 
 func formatRule(selectors []string, decls []string) string {

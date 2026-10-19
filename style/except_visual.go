@@ -230,3 +230,25 @@ func DividerBelow() Option {
 		r.hasDividerBelow = true
 	}
 }
+
+// Wave waves a part back and forth with a gentle rotation anchored at bottom-center.
+func Wave() Option {
+	return func(r *rule) {
+		r.hasWave = true
+	}
+}
+
+// Pulse breathes/pulses scale anchored at center.
+func Pulse() Option {
+	return func(r *rule) {
+		r.hasPulse = true
+	}
+}
+
+// Pivot sets the transform origin for a part.
+func Pivot(origin string) Option {
+	return func(r *rule) {
+		r.hasPivot = true
+		r.pivot = origin
+	}
+}

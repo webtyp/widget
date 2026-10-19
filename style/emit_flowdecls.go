@@ -215,6 +215,20 @@ func autoRotateKeyframesCSS() string {
 		"}\n\n"
 }
 
+func waveKeyframesCSS() string {
+	return "@keyframes tw-wave {\n" +
+		"  0%, 100% { transform: rotate(-3deg); }\n" +
+		"  50% { transform: rotate(3deg); }\n" +
+		"}\n\n"
+}
+
+func pulseKeyframesCSS() string {
+	return "@keyframes tw-pulse {\n" +
+		"  0%, 100% { transform: scale(0.95); opacity: 0.6; }\n" +
+		"  50% { transform: scale(1.04); opacity: 1; }\n" +
+		"}\n\n"
+}
+
 // masterDetailStripDecls lays the two panels out as a horizontal scroll-snap
 // strip. direction: rtl is load-bearing — it puts the start edge on the right,
 // which is where scroll position 0 already rests, so the master panel is what

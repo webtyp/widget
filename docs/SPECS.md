@@ -325,6 +325,9 @@ func IconBox(IconSize) Option
 func FontSize(TextSize) Option
 func FontWeight(Weight) Option
 func Animate(Motion) Option
+func Wave() Option
+func Pulse() Option
+func Pivot(origin string) Option
 func Rotate(Turn) Option
 func Fill() Option
 func Grow() Option
@@ -389,7 +392,10 @@ func FloatMiddle(side Side, gap Space) Option
 | `EdgeStrip(scope, side)` | `position:{absolute\|fixed}; inset-block:0; inset-inline-{start\|end}:0`; `z-index:var(<Kind layer>)` for `Viewport`, `z-index:1` for `Parent` — spans the FULL block axis of its `Scope` plus one inline edge, and deliberately emits no `width:` — the property that differentiates it from `Drawer()`, which forces one and hard-requires a paired `RevealedBy()`. `EdgeStrip` carries no such requirement: it is permanent chrome (a calendar's prev/next overlay strip), not a toggled panel. Like `Docked`/`OnEdge`, a `Parent`-scoped `EdgeStrip` is itself a containing block for a `Flyout()` descendant |
 | `Meter(thickness)` | `height:var(<thickness>); width:var(--meter-fill,0%)` — a thin bar whose fill fraction is a per-instance runtime value, not a scale step: the stylesheet declares only the SHAPE (that the length axis feeds `width`, with a `0%` fallback); the host sets ONLY the bare `--meter-fill:N%;` value inline, never a property name or selector |
 | `Animate(m)` | `transition: all var(--duration-*) var(--ease-in-out)` — except on a rule that also carries `RevealedBy()`, where it becomes the animated reveal of §5.2 instead |
-| `Rotate(t)` | `transform: rotate(<Turn degrees>)` — emits `0deg`/`90deg`/`180deg`/`270deg` by the `Turn` step. Pair with a state rule (`When`/`WhenWithin`) so the rotation IS the state, and with `Animate()` on the base rule so the turn is a transition. Not combinable with `OnEdge()`/`Drawer()`/`FloatMiddle()`: all already own the element's `transform`, and a second declaration would silently replace the first — `Validate()` rejects the combination |
+| `Wave()` | `transform-box: fill-box; transform-origin: 50% 100%; animation: tw-wave 1s ease-in-out infinite;` — waves a part back and forth with a gentle rotation anchored at bottom-center. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
+| `Pulse()` | `transform-box: fill-box; transform-origin: center; animation: tw-pulse 2s ease-in-out infinite;` — breathes/pulses scale anchored at center. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Wave()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
+| `Pivot(origin string)` | `transform-box: fill-box; transform-origin: <origin>;` — sets the transform origin. Not combinable with `Wave()`/`Pulse()` which own `transform-origin` — `Validate()` rejects the combination |
+| `Rotate(t)` | `transform: rotate(<Turn degrees>)` — emits `0deg`/`90deg`/`180deg`/`270deg` by the `Turn` step. Pair with a state rule (`When`/`WhenWithin`) so the rotation IS the state, and with `Animate()` on the base rule so the turn is a transition. Not combinable with `Wave()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()`: all already own the element's `transform`, and a second declaration would silently replace the first — `Validate()` rejects the combination |
 
 `Veil()` must emit the token **with its catalog fallback**. Every rule carrying
 `Animate` is repeated under `@media (prefers-reduced-motion: reduce)` with

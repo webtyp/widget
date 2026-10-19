@@ -27,8 +27,37 @@ func (s *Sheet) validateComposition(errs []error) []error {
 		if n > 1 {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Anchor/Docked/OnEdge/Flyout/Backdrop/Drawer/EdgeStrip/FloatMiddle/VisuallyHidden all set position; use one", string(s.widget.WidgetName()), string(p)))
 		}
-		if r.hasRotate && (r.hasOnEdge || r.hasDrawer || r.hasFloatMiddle) {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
+		hasTransform := r.hasRotate || r.hasWave || r.hasPulse
+		if hasTransform && (r.hasOnEdge || r.hasDrawer || r.hasFloatMiddle) {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate/Wave/Pulse cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
+		}
+
+		transforms := 0
+		if r.hasRotate {
+			transforms++
+		}
+		if r.hasWave {
+			transforms++
+		}
+		if r.hasPulse {
+			transforms++
+		}
+		if transforms > 1 {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate, Wave, and Pulse all set transform; use only one", string(s.widget.WidgetName()), string(p)))
+		}
+
+		origins := 0
+		if r.hasWave {
+			origins++
+		}
+		if r.hasPulse {
+			origins++
+		}
+		if r.hasPivot {
+			origins++
+		}
+		if origins > 1 {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Wave, Pulse, and Pivot all set transform-origin; use only one", string(s.widget.WidgetName()), string(p)))
 		}
 	}
 	checkAppBar := func(p widget.Part, r rule) {
