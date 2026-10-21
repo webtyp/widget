@@ -2,6 +2,8 @@
 PLAN: "feat(style): Blink, Breathe and Frame motion recipes — CSS-only loops for illustrated widgets"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 2069284888834209850
 ---
 
 > Read AGENTS.md at the repo root before any change.
