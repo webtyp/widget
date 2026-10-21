@@ -2,8 +2,10 @@
 PLAN: "feat(style): Blink, Breathe and Frame motion recipes — CSS-only loops for illustrated widgets"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 2069284888834209850
+PR: https://github.com/webtyp/widget/pull/10
+REVIEWED_COMMIT: d849680913bf936e385213f0b2d260dacebf528e
 ---
 
 > Read AGENTS.md at the repo root before any change.
