@@ -168,6 +168,12 @@ type rule struct {
 	pivot    string
 	hasWave  bool
 	hasPulse bool
+	hasBlink bool
+	hasBreathe bool
+	hasFrame bool
+	frameIndex int
+	frameCount int
+	frameCadence Cadence
 
 	hasRotate bool
 	rotate    Turn
@@ -180,6 +186,10 @@ type rule struct {
 
 	hidden bool
 	shown  bool
+}
+
+func (r rule) animated() bool {
+	return r.hasWave || r.hasPulse || r.hasBlink || r.hasBreathe || r.hasFrame
 }
 
 type stateKey struct {

@@ -116,37 +116,37 @@ func (s *Sheet) emitReducedMotion(sb *fmt.Conv, parts []widget.Part, autoRotateS
 	}
 
 	var animSel []string
-	if s.rootRule.hasWave || s.rootRule.hasPulse {
+	if s.rootRule.animated() {
 		animSel = append(animSel, selectorOf(s.widget.WidgetName(), ""))
 	}
 	for _, p := range parts {
-		if s.partRules[p].hasWave || s.partRules[p].hasPulse {
+		if s.partRules[p].animated() {
 			animSel = append(animSel, selectorOf(s.widget.WidgetName(), p))
 		}
 	}
 	for k, sr := range s.stateRules {
-		if sr.hasWave || sr.hasPulse {
+		if sr.animated() {
 			attr := k.state.Attr()
 			sel := fmt.Sprintf("%s[%s=\"%s\"]", selectorOf(s.widget.WidgetName(), k.part), attr.Key(), attr.Value())
 			animSel = append(animSel, sel)
 		}
 	}
 	for k, cr := range s.cueWithin {
-		if cr.hasWave || cr.hasPulse {
+		if cr.animated() {
 			animSel = append(animSel,
 				selectorOf(s.widget.WidgetName(), k.container)+cuePseudo(k.cue)+
 					" "+selectorOf(s.widget.WidgetName(), k.part))
 		}
 	}
 	for k, cr := range s.cueWithinHover {
-		if cr.hasWave || cr.hasPulse {
+		if cr.animated() {
 			animSel = append(animSel,
 				selectorOf(s.widget.WidgetName(), k.container)+cuePseudo(k.cue)+
 					" "+selectorOf(s.widget.WidgetName(), k.part))
 		}
 	}
 	for k, cr := range s.cueAcross {
-		if cr.hasWave || cr.hasPulse {
+		if cr.animated() {
 			animSel = append(animSel,
 				selectorOf(s.widget.WidgetName(), "")+
 					":has("+selectorOf(s.widget.WidgetName(), k.region)+cuePseudo(k.cue)+") "+
@@ -154,7 +154,7 @@ func (s *Sheet) emitReducedMotion(sb *fmt.Conv, parts []widget.Part, autoRotateS
 		}
 	}
 	for k, sr := range s.stateAcross {
-		if sr.hasWave || sr.hasPulse {
+		if sr.animated() {
 			attr := k.state.Attr()
 			animSel = append(animSel,
 				selectorOf(s.widget.WidgetName(), "")+
@@ -163,12 +163,12 @@ func (s *Sheet) emitReducedMotion(sb *fmt.Conv, parts []widget.Part, autoRotateS
 		}
 	}
 	for k, dr := range s.deviceRules {
-		if dr.hasWave || dr.hasPulse {
+		if dr.animated() {
 			animSel = append(animSel, selectorOf(s.widget.WidgetName(), k.part))
 		}
 	}
 	for k, cr := range s.cueRules {
-		if cr.hasWave || cr.hasPulse {
+		if cr.animated() {
 			sel := selectorOf(s.widget.WidgetName(), k.part) + cuePseudo(k.cue)
 			animSel = append(animSel, sel)
 		}
@@ -178,10 +178,73 @@ func (s *Sheet) emitReducedMotion(sb *fmt.Conv, parts []widget.Part, autoRotateS
 		animSel = append(animSel, sel+" > *")
 	}
 
+	var frameHiddenSel []string
+	if s.rootRule.hasFrame && s.rootRule.frameIndex > 0 {
+		frameHiddenSel = append(frameHiddenSel, selectorOf(s.widget.WidgetName(), ""))
+	}
+	for _, p := range parts {
+		if s.partRules[p].hasFrame && s.partRules[p].frameIndex > 0 {
+			frameHiddenSel = append(frameHiddenSel, selectorOf(s.widget.WidgetName(), p))
+		}
+	}
+	for k, sr := range s.stateRules {
+		if sr.hasFrame && sr.frameIndex > 0 {
+			attr := k.state.Attr()
+			sel := fmt.Sprintf("%s[%s=\"%s\"]", selectorOf(s.widget.WidgetName(), k.part), attr.Key(), attr.Value())
+			frameHiddenSel = append(frameHiddenSel, sel)
+		}
+	}
+	for k, cr := range s.cueWithin {
+		if cr.hasFrame && cr.frameIndex > 0 {
+			frameHiddenSel = append(frameHiddenSel,
+				selectorOf(s.widget.WidgetName(), k.container)+cuePseudo(k.cue)+
+					" "+selectorOf(s.widget.WidgetName(), k.part))
+		}
+	}
+	for k, cr := range s.cueWithinHover {
+		if cr.hasFrame && cr.frameIndex > 0 {
+			frameHiddenSel = append(frameHiddenSel,
+				selectorOf(s.widget.WidgetName(), k.container)+cuePseudo(k.cue)+
+					" "+selectorOf(s.widget.WidgetName(), k.part))
+		}
+	}
+	for k, cr := range s.cueAcross {
+		if cr.hasFrame && cr.frameIndex > 0 {
+			frameHiddenSel = append(frameHiddenSel,
+				selectorOf(s.widget.WidgetName(), "")+
+					":has("+selectorOf(s.widget.WidgetName(), k.region)+cuePseudo(k.cue)+") "+
+					selectorOf(s.widget.WidgetName(), k.part))
+		}
+	}
+	for k, sr := range s.stateAcross {
+		if sr.hasFrame && sr.frameIndex > 0 {
+			attr := k.state.Attr()
+			frameHiddenSel = append(frameHiddenSel,
+				selectorOf(s.widget.WidgetName(), "")+
+					":has("+selectorOf(s.widget.WidgetName(), k.region)+" ["+attr.Key()+"=\""+attr.Value()+"\"]) "+
+					selectorOf(s.widget.WidgetName(), k.part))
+		}
+	}
+	for k, dr := range s.deviceRules {
+		if dr.hasFrame && dr.frameIndex > 0 {
+			frameHiddenSel = append(frameHiddenSel, selectorOf(s.widget.WidgetName(), k.part))
+		}
+	}
+	for k, cr := range s.cueRules {
+		if cr.hasFrame && cr.frameIndex > 0 {
+			sel := selectorOf(s.widget.WidgetName(), k.part) + cuePseudo(k.cue)
+			frameHiddenSel = append(frameHiddenSel, sel)
+		}
+	}
+
 	if len(animSel) > 0 {
 		sort.Strings(animSel)
 		sb.WriteString("@media (prefers-reduced-motion: reduce) {\n")
 		sb.WriteString(formatRule(animSel, []string{"animation: none;"}))
+		if len(frameHiddenSel) > 0 {
+			sort.Strings(frameHiddenSel)
+			sb.WriteString(formatRule(frameHiddenSel, []string{"opacity: 0;"}))
+		}
 		sb.WriteString("}\n")
 	}
 }

@@ -245,6 +245,30 @@ func Pulse() Option {
 	}
 }
 
+// Blink closes and opens vertically every 4s.
+func Blink() Option {
+	return func(r *rule) {
+		r.hasBlink = true
+	}
+}
+
+// Breathe rises slightly from its base every 4s.
+func Breathe() Option {
+	return func(r *rule) {
+		r.hasBreathe = true
+	}
+}
+
+// Frame sets the part as one frame of a looping flipbook.
+func Frame(index, count int, c Cadence) Option {
+	return func(r *rule) {
+		r.hasFrame = true
+		r.frameIndex = index
+		r.frameCount = count
+		r.frameCadence = c
+	}
+}
+
 // Pivot sets the transform origin for a part.
 func Pivot(origin string) Option {
 	return func(r *rule) {

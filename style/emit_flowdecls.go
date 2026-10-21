@@ -229,6 +229,40 @@ func pulseKeyframesCSS() string {
 		"}\n\n"
 }
 
+func blinkKeyframesCSS() string {
+	return "@keyframes tw-blink {\n" +
+		"  0%, 92%, 100% { transform: scaleY(1); }\n" +
+		"  95% { transform: scaleY(0.1); }\n" +
+		"}\n\n"
+}
+
+func breatheKeyframesCSS() string {
+	return "@keyframes tw-breathe {\n" +
+		"  0%, 100% { transform: scaleY(1); }\n" +
+		"  50% { transform: scaleY(1.012); }\n" +
+		"}\n\n"
+}
+
+func frameKeyframesCSS(n int) string {
+	var bp string
+	switch n {
+	case 2:
+		bp = "50%"
+	case 3:
+		bp = "33.333%"
+	case 4:
+		bp = "25%"
+	case 5:
+		bp = "20%"
+	case 6:
+		bp = "16.667%"
+	}
+	return "@keyframes tw-frame-" + fmt.Sprint(n) + " {\n" +
+		"  0% { opacity: 1; }\n" +
+		"  " + bp + ", 100% { opacity: 0; }\n" +
+		"}\n\n"
+}
+
 // masterDetailStripDecls lays the two panels out as a horizontal scroll-snap
 // strip. direction: rtl is load-bearing — it puts the start edge on the right,
 // which is where scroll position 0 already rests, so the master panel is what

@@ -265,27 +265,47 @@ func TestMotionConflictsAreDiagnosed(t *testing.T) {
 		{
 			"Rotate and Wave",
 			[]style.Option{style.Rotate(style.TurnQuarter), style.Wave()},
-			"Rotate, Wave, and Pulse all set transform; use only one",
+			"Rotate, Wave, Pulse, Blink and Breathe all set transform; use only one",
 		},
 		{
 			"Wave and Pulse",
 			[]style.Option{style.Wave(), style.Pulse()},
-			"Rotate, Wave, and Pulse all set transform; use only one", // Note: It triggers this first since both set transform and transform-origin
+			"Wave, Pulse, Blink, Breathe and Frame all set animation; use only one", // Note: Animation checked first
 		},
 		{
 			"Wave and Pivot",
 			[]style.Option{style.Wave(), style.Pivot("top")},
-			"Wave, Pulse, and Pivot all set transform-origin; use only one",
+			"Wave, Pulse, Blink, Breathe and Pivot all set transform-origin; use only one",
 		},
 		{
 			"Pulse and Pivot",
 			[]style.Option{style.Pulse(), style.Pivot("top")},
-			"Wave, Pulse, and Pivot all set transform-origin; use only one",
+			"Wave, Pulse, Blink, Breathe and Pivot all set transform-origin; use only one",
 		},
 		{
 			"Wave and OnEdge",
 			[]style.Option{style.Wave(), style.OnEdge(style.EdgeTop, style.SideStart, style.SpaceNone, style.SpaceNone)},
-			"Rotate/Wave/Pulse cannot combine with OnEdge/Drawer/FloatMiddle — all own transform",
+			"Rotate/Wave/Pulse/Blink/Breathe cannot combine with OnEdge/Drawer/FloatMiddle — all own transform",
+		},
+		{
+			"Wave and Frame",
+			[]style.Option{style.Wave(), style.Frame(0, 2, style.CadenceFast)},
+			"Wave, Pulse, Blink, Breathe and Frame all set animation; use only one",
+		},
+		{
+			"Blink and Rotate",
+			[]style.Option{style.Blink(), style.Rotate(style.TurnHalf)},
+			"Rotate, Wave, Pulse, Blink and Breathe all set transform; use only one",
+		},
+		{
+			"Frame count range",
+			[]style.Option{style.Frame(0, 7, style.CadenceFast)},
+			"Frame count must be 2 to 6, got 7",
+		},
+		{
+			"Frame index range",
+			[]style.Option{style.Frame(3, 3, style.CadenceFast)},
+			"Frame index must be 0 to 2, got 3",
 		},
 	}
 

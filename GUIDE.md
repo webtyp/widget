@@ -26,6 +26,7 @@ The substitute for design judgement: you do not choose, you look up.
 | a chevron (or disclosure arrow) that flips when its host opens | `Rotate(TurnNone)` on the base rule + `When(widget.Open, "icon", Rotate(TurnHalf))`, with `Animate(MotionBase)` so the turn is a transition — the rotation IS the state, never a class toggled by hand |
 | an interactive vector part with continuous back-and-forth movement | `Wave()` |
 | an interactive vector part with a breathing scale pulse | `Pulse()` |
+| a three-frame flipbook | `Part("a", Frame(0,3,CadenceFast)).Part("o", Frame(1,3,CadenceFast)).Part("rest", Frame(2,3,CadenceFast))` |
 | an animated part anchored to a specific origin | `Pivot("origin string")` |
 | a fixed-size item (an `IconBox()`) centered inside a wider row/grid track | `CenterSelf()` |
 | a runtime fill level — an occupancy bar, a progress meter | `Meter(Space1)`, host sets `--meter-fill:N%;` per instance |

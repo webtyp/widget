@@ -176,3 +176,11 @@ const (
 	TurnHalf                     // 180deg — a chevron flipped to point the other way
 	TurnThreeQuarter             // 270deg
 )
+
+// Cadence is how long each frame of a Frame() flipbook stays on screen.
+type Cadence uint8
+
+const (
+	CadenceFast Cadence = iota // 150ms per frame — syllables of speech
+	CadenceSlow                // 400ms per frame — dots of a "thinking" indicator
+)
