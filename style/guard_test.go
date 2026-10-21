@@ -53,6 +53,9 @@ func TestNoInventedValues(t *testing.T) {
 
 	// Giant sheet to exercise EVERY option and scale
 	sheet := style.For(wd).
+		Part("blink", style.Blink()).
+		Part("breathe", style.Breathe()).
+		Part("frame", style.Frame(0, 3, style.CadenceFast)).
 		Root(
 			style.Stack(style.Space12),
 			style.As(style.Page),

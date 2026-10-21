@@ -27,9 +27,35 @@ func (s *Sheet) validateComposition(errs []error) []error {
 		if n > 1 {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Anchor/Docked/OnEdge/Flyout/Backdrop/Drawer/EdgeStrip/FloatMiddle/VisuallyHidden all set position; use one", string(s.widget.WidgetName()), string(p)))
 		}
-		hasTransform := r.hasRotate || r.hasWave || r.hasPulse
+		hasTransform := r.hasRotate || r.hasWave || r.hasPulse || r.hasBlink || r.hasBreathe
 		if hasTransform && (r.hasOnEdge || r.hasDrawer || r.hasFloatMiddle) {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate/Wave/Pulse cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate/Wave/Pulse/Blink/Breathe cannot combine with OnEdge/Drawer/FloatMiddle — all own transform", string(s.widget.WidgetName()), string(p)))
+		}
+
+		animations := 0
+		if r.hasWave {
+			animations++
+		}
+		if r.hasPulse {
+			animations++
+		}
+		if r.hasBlink {
+			animations++
+		}
+		if r.hasBreathe {
+			animations++
+		}
+		if r.hasFrame {
+			animations++
+			if r.frameCount < 2 || r.frameCount > 6 {
+				errs = append(errs, fmt.Errf("sheet %s: part %q: Frame count must be 2 to 6, got %d", string(s.widget.WidgetName()), string(p), r.frameCount))
+			}
+			if r.frameIndex < 0 || r.frameIndex >= r.frameCount {
+				errs = append(errs, fmt.Errf("sheet %s: part %q: Frame index must be 0 to %d, got %d", string(s.widget.WidgetName()), string(p), r.frameCount-1, r.frameIndex))
+			}
+		}
+		if animations > 1 {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Wave, Pulse, Blink, Breathe and Frame all set animation; use only one", string(s.widget.WidgetName()), string(p)))
 		}
 
 		transforms := 0
@@ -42,8 +68,14 @@ func (s *Sheet) validateComposition(errs []error) []error {
 		if r.hasPulse {
 			transforms++
 		}
+		if r.hasBlink {
+			transforms++
+		}
+		if r.hasBreathe {
+			transforms++
+		}
 		if transforms > 1 {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate, Wave, and Pulse all set transform; use only one", string(s.widget.WidgetName()), string(p)))
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Rotate, Wave, Pulse, Blink and Breathe all set transform; use only one", string(s.widget.WidgetName()), string(p)))
 		}
 
 		origins := 0
@@ -53,11 +85,17 @@ func (s *Sheet) validateComposition(errs []error) []error {
 		if r.hasPulse {
 			origins++
 		}
+		if r.hasBlink {
+			origins++
+		}
+		if r.hasBreathe {
+			origins++
+		}
 		if r.hasPivot {
 			origins++
 		}
 		if origins > 1 {
-			errs = append(errs, fmt.Errf("sheet %s: part %q: Wave, Pulse, and Pivot all set transform-origin; use only one", string(s.widget.WidgetName()), string(p)))
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Wave, Pulse, Blink, Breathe and Pivot all set transform-origin; use only one", string(s.widget.WidgetName()), string(p)))
 		}
 	}
 	checkAppBar := func(p widget.Part, r rule) {

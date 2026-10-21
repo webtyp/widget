@@ -54,24 +54,52 @@ func (s *Sheet) Stylesheet() *css.Stylesheet {
 	s.emitDevices(sb)
 	s.emitReducedMotion(sb, parts, autoRotateSels)
 
-	hasWave, hasPulse := s.hasWaveOrPulse()
-	if hasWave {
+	wave, pulse, blink, breathe, frameCounts := s.usedKeyframes()
+	if wave {
 		sb.WriteString(waveKeyframesCSS())
 	}
-	if hasPulse {
+	if pulse {
 		sb.WriteString(pulseKeyframesCSS())
+	}
+	if blink {
+		sb.WriteString(blinkKeyframesCSS())
+	}
+	if breathe {
+		sb.WriteString(breatheKeyframesCSS())
+	}
+	for _, n := range frameCounts {
+		sb.WriteString(frameKeyframesCSS(n))
 	}
 
 	return css.NewStylesheet(css.Raw(sb.GetString(fmt.BuffOut)))
 }
 
-func (s *Sheet) hasWaveOrPulse() (wave bool, pulse bool) {
+func (s *Sheet) usedKeyframes() (wave, pulse, blink, breathe bool, frameCounts []int) {
+	var distinctCounts []int
 	check := func(r rule) {
 		if r.hasWave {
 			wave = true
 		}
 		if r.hasPulse {
 			pulse = true
+		}
+		if r.hasBlink {
+			blink = true
+		}
+		if r.hasBreathe {
+			breathe = true
+		}
+		if r.hasFrame {
+			found := false
+			for _, c := range distinctCounts {
+				if c == r.frameCount {
+					found = true
+					break
+				}
+			}
+			if !found {
+				distinctCounts = append(distinctCounts, r.frameCount)
+			}
 		}
 	}
 	check(s.rootRule)
@@ -99,7 +127,10 @@ func (s *Sheet) hasWaveOrPulse() (wave bool, pulse bool) {
 	for _, r := range s.deviceRules {
 		check(r)
 	}
-	return
+	if len(distinctCounts) > 1 {
+		sort.Ints(distinctCounts)
+	}
+	return wave, pulse, blink, breathe, distinctCounts
 }
 
 // sortedParts is the deterministic part order every section iterates in: the

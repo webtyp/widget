@@ -141,6 +141,7 @@ of these.
 | `Elevation` | `Flat, Raised, Floating, Popover` | `none`, `--shadow-sm/md/lg` |
 | `Motion` | `MotionNone, MotionFast, MotionBase, MotionSlow` | `none`, `--duration-*` + `--ease-in-out` |
 | `Turn` | `TurnNone, TurnQuarter, TurnHalf, TurnThreeQuarter` | `0deg`, `90deg`, `180deg`, `270deg` — quarter-turn steps only; a free degree value is a generic hole with no intent |
+| `Cadence` | `CadenceFast, CadenceSlow` | `150ms`, `400ms` — how long each frame of a `Frame()` flipbook stays on screen |
 | `ColumnWidth` | `ColumnNarrow, ColumnMedium, ColumnWide` | `--column-narrow/medium/wide` |
 | shared boxes | `ControlBox()`, `ChipBox()` | `--control-height`, `--chip-width`, `--chip-height` |
 | `Size` | `Content, Readable, Compact, Third, Half, TwoThirds, Most, Full` | `max-content`, `--max-w-readable`, `min(100%, 24rem)`, `33.33%`, `50%`, `66.66%`, `90%`, `100%` |
@@ -335,6 +336,9 @@ func FontWeight(Weight) Option
 func Animate(Motion) Option
 func Wave() Option
 func Pulse() Option
+func Blink() Option
+func Breathe() Option
+func Frame(index, count int, c Cadence) Option
 func Pivot(origin string) Option
 func Rotate(Turn) Option
 func Fill() Option
@@ -406,8 +410,11 @@ func FloatMiddle(side Side, gap Space) Option
 | `Animate(m)` | `transition: all var(--duration-*) var(--ease-in-out)` — except on a rule that also carries `RevealedBy()`, where it becomes the animated reveal of §5.2 instead |
 | `Wave()` | `transform-box: fill-box; transform-origin: 50% 100%; animation: tw-wave 1s ease-in-out infinite;` — waves a part back and forth with a gentle rotation anchored at bottom-center. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
 | `Pulse()` | `transform-box: fill-box; transform-origin: center; animation: tw-pulse 2s ease-in-out infinite;` — breathes/pulses scale anchored at center. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Wave()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
-| `Pivot(origin string)` | `transform-box: fill-box; transform-origin: <origin>;` — sets the transform origin. Not combinable with `Wave()`/`Pulse()` which own `transform-origin` — `Validate()` rejects the combination |
-| `Rotate(t)` | `transform: rotate(<Turn degrees>)` — emits `0deg`/`90deg`/`180deg`/`270deg` by the `Turn` step. Pair with a state rule (`When`/`WhenWithin`) so the rotation IS the state, and with `Animate()` on the base rule so the turn is a transition. Not combinable with `Wave()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()`: all already own the element's `transform`, and a second declaration would silently replace the first — `Validate()` rejects the combination |
+| `Blink()` | `transform-box: fill-box; transform-origin: center; animation: tw-blink 4s ease-in-out infinite;` — closes and opens vertically every 4s. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Wave()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
+| `Breathe()` | `transform-box: fill-box; transform-origin: 50% 100%; animation: tw-breathe 4s ease-in-out infinite;` — rises slightly from its base every 4s. Automatically disabled under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Wave()`/`Pulse()`/`OnEdge()`/`Drawer()`/`FloatMiddle()` — `Validate()` rejects the combination |
+| `Frame(i, n, c)` | `animation-name: tw-frame-<n>; animation-duration: <n*ms>ms; animation-timing-function: step-end; animation-delay: <d>ms; animation-iteration-count: infinite;` — sets the part as one frame of a looping flipbook. Automatically disabled (and opacity 0 for i > 0) under `@media (prefers-reduced-motion: reduce)`. Not combinable with `Rotate()`/`Wave()`/`Pulse()`/`Blink()`/`Breathe()` — `Validate()` rejects the combination |
+| `Pivot(origin string)` | `transform-box: fill-box; transform-origin: <origin>;` — sets the transform origin. Not combinable with `Wave()`/`Pulse()`/`Blink()`/`Breathe()` which own `transform-origin` — `Validate()` rejects the combination |
+| `Rotate(t)` | `transform: rotate(<Turn degrees>)` — emits `0deg`/`90deg`/`180deg`/`270deg` by the `Turn` step. Pair with a state rule (`When`/`WhenWithin`) so the rotation IS the state, and with `Animate()` on the base rule so the turn is a transition. Not combinable with `Wave()`/`Pulse()`/`Blink()`/`Breathe()`/`OnEdge()`/`Drawer()`/`FloatMiddle()`: all already own the element's `transform`, and a second declaration would silently replace the first — `Validate()` rejects the combination |
 
 `Veil()` must emit the token **with its catalog fallback**. Every rule carrying
 `Animate` is repeated under `@media (prefers-reduced-motion: reduce)` with

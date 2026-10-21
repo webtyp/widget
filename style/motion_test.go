@@ -120,3 +120,91 @@ func TestMotion_WavePulsePivot(t *testing.T) {
 		t.Errorf("Expected reduced motion block for wave/pulse:\n%s\n\nGot:\n%s", expectedReduced, cssOut)
 	}
 }
+
+func TestMotion_BlinkBreatheFrame(t *testing.T) {
+	w := testWidget{name: "avatar", kind: widget.Region}
+	sheet := style.For(w).
+		Part("eyes", style.Blink()).
+		Part("body", style.Breathe()).
+		Part("a", style.Frame(0, 3, style.CadenceFast)).
+		Part("o", style.Frame(1, 3, style.CadenceFast)).
+		Part("rest", style.Frame(2, 3, style.CadenceFast))
+
+	cssOut := sheet.Stylesheet().String()
+
+	if !strings.Contains(cssOut, ".avatar__eyes {\n  transform-box: fill-box;\n  transform-origin: center;\n  animation: tw-blink 4s ease-in-out infinite;\n}") {
+		if !strings.Contains(cssOut, "animation: tw-blink") {
+			t.Errorf("Expected Blink output, got:\n%s", cssOut)
+		}
+	}
+	if strings.Count(cssOut, "@keyframes tw-blink {") != 1 {
+		t.Errorf("Expected exactly one @keyframes tw-blink in output")
+	}
+
+	if !strings.Contains(cssOut, ".avatar__body {\n  transform-box: fill-box;\n  transform-origin: 50% 100%;\n  animation: tw-breathe 4s ease-in-out infinite;\n}") {
+		if !strings.Contains(cssOut, "animation: tw-breathe") {
+			t.Errorf("Expected Breathe output, got:\n%s", cssOut)
+		}
+	}
+	if strings.Count(cssOut, "@keyframes tw-breathe {") != 1 {
+		t.Errorf("Expected exactly one @keyframes tw-breathe in output")
+	}
+
+	if !strings.Contains(cssOut, ".avatar__a {\n  animation-name: tw-frame-3;\n  animation-duration: 450ms;\n  animation-timing-function: step-end;\n  animation-delay: 0ms;\n  animation-iteration-count: infinite;\n}") {
+		if !strings.Contains(cssOut, "animation-name: tw-frame-3") || !strings.Contains(cssOut, "delay: 0ms") {
+			t.Errorf("Expected Frame a output, got:\n%s", cssOut)
+		}
+	}
+	if !strings.Contains(cssOut, ".avatar__o {\n  animation-name: tw-frame-3;\n  animation-duration: 450ms;\n  animation-timing-function: step-end;\n  animation-delay: -300ms;\n  animation-iteration-count: infinite;\n}") {
+		if !strings.Contains(cssOut, "animation-name: tw-frame-3") || !strings.Contains(cssOut, "delay: -300ms") {
+			t.Errorf("Expected Frame o output, got:\n%s", cssOut)
+		}
+	}
+	if !strings.Contains(cssOut, ".avatar__rest {\n  animation-name: tw-frame-3;\n  animation-duration: 450ms;\n  animation-timing-function: step-end;\n  animation-delay: -150ms;\n  animation-iteration-count: infinite;\n}") {
+		if !strings.Contains(cssOut, "animation-name: tw-frame-3") || !strings.Contains(cssOut, "delay: -150ms") {
+			t.Errorf("Expected Frame rest output, got:\n%s", cssOut)
+		}
+	}
+
+	if strings.Count(cssOut, "@keyframes tw-frame-3 {") != 1 {
+		t.Errorf("Expected exactly one @keyframes tw-frame-3 in output")
+	}
+	if !strings.Contains(cssOut, "33.333%, 100% { opacity: 0; }") {
+		t.Errorf("Expected correct frame breakpoint for 3 frames, got:\n%s", cssOut)
+	}
+
+	expectedReducedAnimNone := `.avatar__a, .avatar__body, .avatar__eyes, .avatar__o, .avatar__rest {
+  animation: none;
+}`
+	if !strings.Contains(cssOut, expectedReducedAnimNone) {
+		t.Errorf("Expected animation: none block for all parts, got:\n%s", cssOut)
+	}
+
+	expectedReducedOpacityZero := `.avatar__o, .avatar__rest {
+  opacity: 0;
+}`
+	if !strings.Contains(cssOut, expectedReducedOpacityZero) {
+		t.Errorf("Expected opacity: 0 block for frames > 0, got:\n%s", cssOut)
+	}
+}
+
+func TestMotion_FrameMultipleCounts(t *testing.T) {
+	w := testWidget{name: "avatar", kind: widget.Region}
+	sheet := style.For(w).
+		Part("fast", style.Frame(0, 2, style.CadenceSlow)).
+		Part("slow", style.Frame(0, 4, style.CadenceSlow))
+
+	cssOut := sheet.Stylesheet().String()
+
+	if !strings.Contains(cssOut, "animation-duration: 800ms") {
+		t.Errorf("Expected duration 800ms for 2 slow frames")
+	}
+	if !strings.Contains(cssOut, "animation-duration: 1600ms") {
+		t.Errorf("Expected duration 1600ms for 4 slow frames")
+	}
+	idx2 := strings.Index(cssOut, "@keyframes tw-frame-2 {")
+	idx4 := strings.Index(cssOut, "@keyframes tw-frame-4 {")
+	if idx2 == -1 || idx4 == -1 || idx2 > idx4 {
+		t.Errorf("Expected tw-frame-2 before tw-frame-4 in output")
+	}
+}
