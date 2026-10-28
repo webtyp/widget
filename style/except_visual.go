@@ -155,6 +155,16 @@ func FontSize(ts TextSize) Option {
 	}
 }
 
+// Typeface sets the theme's typeface. A page inherits it from body; a document with no
+// body — a standalone SVG — needs it on its root, or the viewer uses its serif default.
+//
+//	Root(style.Typeface(), style.FontSize(style.TextXs))
+func Typeface() Option {
+	return func(r *rule) {
+		r.typeface = true
+	}
+}
+
 // FontWeight sets the font weight.
 func FontWeight(w Weight) Option {
 	return func(r *rule) {

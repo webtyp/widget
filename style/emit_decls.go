@@ -56,6 +56,7 @@ func (r rule) Decls(layer widget.Layer) []string {
 	}
 
 	decls = append(decls, r.surfaceDecls()...)
+	decls = append(decls, r.paintDecls()...)
 
 	// Interactive() is the DSL's own declaration that this part answers to
 	// hover/focus/press — i.e. it is clickable by construction, not by a
@@ -109,6 +110,9 @@ func (r rule) Decls(layer widget.Layer) []string {
 		decls = append(decls, "width: "+v+";")
 		decls = append(decls, "height: "+v+";")
 		decls = append(decls, "flex-shrink: 0;")
+	}
+	if r.typeface {
+		decls = append(decls, "font-family: "+css.FontSans.Var()+";")
 	}
 	if r.hasTextSize {
 		decls = append(decls, "font-size: "+textSizeVar(r.textSize)+";")

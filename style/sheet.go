@@ -57,6 +57,17 @@ type rule struct {
 	hasGlyph bool
 	glyph    Surface
 
+	// SVG paints (paint.go): one of Paint/Ink/Line per part, Dashed with a stroke.
+	typeface bool // Typeface(): the theme font, for a document with no body
+
+	hasPaint bool
+	paint    Surface
+	hasInk   bool
+	ink      Surface
+	hasLine  bool
+	line     Surface
+	dashed   bool
+
 	hasDocked      bool
 	dockedScope    Scope
 	dockedEdge     Edge

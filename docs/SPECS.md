@@ -345,6 +345,11 @@ func Fill() Option
 func Grow() Option
 func PushEnd() Option
 func Glyph(Surface) Option
+func Paint(Surface) Option
+func Ink(Surface) Option
+func Line(Surface) Option
+func Dashed() Option
+func Typeface() Option
 func ControlBox() Option
 func ChipBox() Option
 func Hide() Option
@@ -390,6 +395,11 @@ func FloatMiddle(side Side, gap Space) Option
 | `Backdrop(Viewport)` | `position:fixed; inset:0; z-index:var(<Kind layer>)` |
 | `Veil()` | `background-color: color-mix(in srgb, var(--color-surface,<fallback>) 60%, transparent)` |
 | `Glyph(s)` | `color:<surface base>; fill:currentColor` — tints the content, paints no background |
+| `Paint(s)` | SVG shape: `fill:<surface background>; stroke:<surface border colour>` |
+| `Ink(s)` | SVG text: `fill:<surface text colour>; stroke:none` |
+| `Line(s)` | SVG line: `fill:none; stroke:<border colour, or the solid role's own colour>` |
+| `Dashed()` | `stroke-dasharray: var(--space-1) var(--space-1)`; needs `Paint` or `Line` |
+| `Typeface()` | `font-family: var(--font-sans)` — for a root with no body (standalone SVG) |
 | `ControlBox()` | `min-height:var(--control-height)` |
 | `ChipBox()` | `width:var(--chip-width); overflow:hidden` |
 | `Hide()` | `display:none` — for use inside `On()`, the inverse of `OnlyOn` |
@@ -520,6 +530,8 @@ declared (or the composition corrected).
 | `OnlyOn` called twice for the same part with different devices | `sheet <name>: part "<part>" declared OnlyOn for both <device1> and <device2>` |
 | `Within()` names a container never declared with `Part()` | `sheet <name>: Within() container "<part>" is not a declared part` |
 | `Within()` declares a part inside itself | `sheet <name>: part "<part>": Within() declares the part inside itself` |
+| More than one of `Paint()`, `Ink()`, `Line()` on one part | `sheet <name>: part "<part>": Paint, Ink and Line all set fill; use one` |
+| `Dashed()` without `Paint()` or `Line()` | `sheet <name>: part "<part>": Dashed needs a stroke: Paint or Line` |
 | `Within()` containment is cyclic | `sheet <name>: part "<part>": Within() containment cycle` |
 | A `Flyout()` part is not nested inside anything while a containing-block part exists (`Docked(Parent, …)`, `OnEdge`, `Backdrop(Parent)`) | `sheet <name>: part "<flyout>" is a Flyout and part "<stealer>" is a containing block, but the sheet cannot know which contains which — declare the nesting with Within()` |
 | A positioned part sits between a `Flyout()` and its `Anchor()` in the declared chain | `sheet <name>: part "<flyout>": part "<thief>" is positioned between the Flyout and its Anchor and steals the containing block the Flyout hangs from; make it not positioned or re-anchor the Flyout` |

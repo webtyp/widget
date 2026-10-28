@@ -37,6 +37,8 @@ func main() {
 ## Recipes
 
 - `Heading()` — the one section title inside content; the screen title is the platform header's.
+- `Paint(s)`, `Ink(s)`, `Line(s)`, `Dashed()` — an SVG drawing coloured from the theme: `Paint` fills a shape with the surface's background and strokes it with its border, `Ink` fills text with its text colour, `Line` strokes with no fill, `Dashed` dashes that stroke. A drawing never carries its own `<style>` (`Glyph(s)` stays the brand tint for an icon).
+- `Typeface()` — the theme font on a root with no body to inherit it from (a standalone SVG).
 
 ## Documentation
 

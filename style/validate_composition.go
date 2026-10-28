@@ -54,6 +54,19 @@ func (s *Sheet) validateComposition(errs []error) []error {
 				errs = append(errs, fmt.Errf("sheet %s: part %q: Frame index must be 0 to %d, got %d", string(s.widget.WidgetName()), string(p), r.frameCount-1, r.frameIndex))
 			}
 		}
+		fills := 0
+		for _, on := range []bool{r.hasPaint, r.hasInk, r.hasLine} {
+			if on {
+				fills++
+			}
+		}
+		if fills > 1 {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Paint, Ink and Line all set fill; use one", string(s.widget.WidgetName()), string(p)))
+		}
+		if r.dashed && !r.hasPaint && !r.hasLine {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: Dashed needs a stroke: Paint or Line", string(s.widget.WidgetName()), string(p)))
+		}
+
 		if animations > 1 {
 			errs = append(errs, fmt.Errf("sheet %s: part %q: Wave, Pulse, Blink, Breathe and Frame all set animation; use only one", string(s.widget.WidgetName()), string(p)))
 		}
