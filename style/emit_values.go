@@ -6,6 +6,16 @@ import (
 	"webtyp.com/css"
 )
 
+// spaceLen is spaceVar for a term summed inside calc(). There SpaceNone's bare
+// 0 is a <number>, not a <length>: the whole calc() is invalid and the browser
+// drops the declaration. 0px is the same distance and keeps the sum valid.
+func spaceLen(s Space) string {
+	if v := spaceVar(s); v != "0" {
+		return v
+	}
+	return "0px"
+}
+
 func spaceVar(s Space) string {
 	switch s {
 	case SpaceNone:

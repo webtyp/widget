@@ -215,7 +215,7 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		// device — top and bottom were both live and the panel became 8x2.
 		blockGap := spaceVar(r.dockedGap)
 		if r.hasDockedClear {
-			blockGap = "calc(" + spaceVar(r.dockedGap) + " + " + spaceVar(r.dockedClear) + ")"
+			blockGap = "calc(" + spaceLen(r.dockedGap) + " + " + spaceLen(r.dockedClear) + ")"
 		}
 		if r.dockedEdge == EdgeTop {
 			decls = append(decls, "inset-block-start: "+blockGap+";", "inset-block-end: auto;")

@@ -152,7 +152,7 @@ func floatingPadDecls() []string {
 // overwhelming majority of Scroll() call sites — keeps emitting the exact
 // byte-identical decls it always has.
 func floatingPadDeclsWithGutter(g Space) []string {
-	gutter := spaceVar(g)
+	gutter := spaceLen(g)
 	return []string{
 		"padding-block-start: calc(var(" + floatingTopVar + ", 0px) + " + gutter + ");",
 		"padding-block-end: calc(var(" + floatingBottomVar + ", 0px) + " + gutter + ");",
