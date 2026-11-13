@@ -81,7 +81,7 @@ func TestConsumerMasterDetail(t *testing.T) {
 
 	if idxTokens == -1 || idxPrimitives == -1 || idxWidgets == -1 || idxStates == -1 {
 		t.Error("Missing a required cascade layer (tokens, primitives, widgets, states)")
-	} else if !(idxTokens < idxPrimitives && idxPrimitives < idxWidgets && idxWidgets < idxStates) {
+	} else if idxTokens >= idxPrimitives || idxPrimitives >= idxWidgets || idxWidgets >= idxStates {
 		t.Errorf("Incorrect layer order: tokens (%d) < primitives (%d) < widgets (%d) < states (%d)",
 			idxTokens, idxPrimitives, idxWidgets, idxStates)
 	}

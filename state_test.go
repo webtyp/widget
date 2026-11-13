@@ -35,5 +35,5 @@ func TestStateAttrTable(t *testing.T) {
 //	// must not compile — a StateAttr is not an fmt.KeyValue anymore
 //	el.Attr(st.Attr().Key(), st.Attr().Value()) // two reads, one state: also wrong
 func TestStateAttrNotConstructible(t *testing.T) {
-	var _ StateAttr = Selected.Attr()
+	_ = Selected.Attr()
 }

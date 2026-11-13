@@ -24,9 +24,10 @@ func extractVarCalls(cssStr string) [][2]string {
 		parenCount := 1
 		p := startPos + 4 // after "var("
 		for p < len(cssStr) && parenCount > 0 {
-			if cssStr[p] == '(' {
+			switch cssStr[p] {
+			case '(':
 				parenCount++
-			} else if cssStr[p] == ')' {
+			case ')':
 				parenCount--
 			}
 			p++
