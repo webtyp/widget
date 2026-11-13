@@ -2,7 +2,7 @@ module webtyp.com/widget
 
 go 1.25.2
 
-require webtyp.com/fmt v1.0.0
+require webtyp.com/fmt v1.0.1
 
 require webtyp.com/css v0.4.30
 
