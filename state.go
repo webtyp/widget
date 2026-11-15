@@ -41,9 +41,10 @@ const (
 	Locked // read-only, but fully legible
 	Invalid
 	Busy
-	Open    // deployed / expanded
-	Current // active navigation item
+	Open     // deployed / expanded
+	Current  // active navigation item
 	SpanFull // spans full width across all columns in a grid
+	Hidden   // not shown now: a field whose Field.ShownWhen does not hold
 )
 
 func (s State) String() string {
@@ -64,6 +65,8 @@ func (s State) String() string {
 		return "Current"
 	case SpanFull:
 		return "SpanFull"
+	case Hidden:
+		return "Hidden"
 	default:
 		return "Unknown"
 	}
@@ -89,6 +92,8 @@ func (s State) Attr() StateAttr {
 		return StateAttr{key: "data-current", value: "true"}
 	case SpanFull:
 		return StateAttr{key: "data-span-full", value: "true"}
+	case Hidden:
+		return StateAttr{key: "data-hidden", value: "true"}
 	default:
 		return StateAttr{}
 	}

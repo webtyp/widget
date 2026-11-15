@@ -50,4 +50,9 @@ const (
 	// has Help (model's Field.Help), the help button beside it. form emits it;
 	// the help text itself opens under the control (see components/tapinfotip).
 	PartLabelRow = Part("label-row")
+	// PartPhone is the row that holds a phone field's prefix select and its number box;
+	// PartPrefix and PartNumber are those two controls (both also carry PartInput).
+	PartPhone  = Part("phone")
+	PartPrefix = Part("prefix")
+	PartNumber = Part("number")
 )

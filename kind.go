@@ -141,7 +141,9 @@ func (k Kind) Allows(s State) bool {
 		// Invalid and Open, which the same stylesheet is already using.
 		//
 		// SpanFull marks an input or container that spans all columns in a multi-column form.
-		return s == Invalid || s == Open || s == Selected || s == SpanFull
+		//
+		// Hidden is a field its Field.ShownWhen leaves out for now.
+		return s == Invalid || s == Open || s == Selected || s == SpanFull || s == Hidden
 	default:
 		return false
 	}
