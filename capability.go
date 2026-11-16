@@ -24,3 +24,8 @@ type Expandable interface{ Expand(open bool) }
 // which is why this is a setter and not a field: a control is free to fan the
 // sink out to several inputs, or to debounce it, without the host knowing.
 type Filterable interface{ OnFilterChange(func(term string)) }
+
+// TypingAware is implemented by a Filterable that only reports a term when the
+// person commits it (Enter): the host registers one sink that fires on every
+// keystroke, with no term, so it can tell the person that Enter is what searches.
+type TypingAware interface{ OnFilterTyping(func()) }

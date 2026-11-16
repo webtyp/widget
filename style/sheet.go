@@ -45,6 +45,7 @@ type rule struct {
 	startContent      bool
 	controlBox        bool
 	controlBoxCompact bool
+	hitArea           bool
 	iconCap           bool
 	iconCapCompact    bool
 	logoBox           bool

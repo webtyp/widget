@@ -95,6 +95,11 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")
 	}
 
+	if r.hitArea {
+		decls = append(decls, "padding: max(0px, calc((24px - 1em) / 2));")
+		decls = append(decls, "margin: min(0px, calc((1em - 24px) / 2));")
+	}
+
 	if r.controlBoxCompact {
 		decls = append(decls, "min-height: "+css.ControlHeightCompact.Var()+";")
 		decls = append(decls, "min-width: "+css.ControlWidth.Var()+";")

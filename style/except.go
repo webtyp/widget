@@ -242,6 +242,16 @@ func IconCap() Option {
 	}
 }
 
+// HitArea grows the element's pressable area to at least 24px (WCAG 2.5.8)
+// without moving or resizing what is drawn: padding adds the missing room and
+// an equal negative margin takes it back from the layout. For a small glyph
+// button (a field's (i)); an element already 24px or larger gets nothing.
+func HitArea() Option {
+	return func(r *rule) {
+		r.hitArea = true
+	}
+}
+
 // IconCapCompact gives the element the compact icon cap: a square of
 // --control-height-compact (44px) that never shrinks and centres its glyph.
 func IconCapCompact() Option {
