@@ -215,6 +215,42 @@ func autoRotateKeyframesCSS() string {
 		"}\n\n"
 }
 
+// The two lengths the scroll-driven animation feeds the mask. Registered with
+// @property so they interpolate as lengths; unregistered custom properties
+// animate discretely and the fade would snap.
+const (
+	scrollCueStart = "--scroll-cue-start"
+	scrollCueEnd   = "--scroll-cue-end"
+	scrollCueSize  = "2rem"
+)
+
+// scrollCueDecls masks the scroll region with a fade at each edge whose width
+// the animation drives. The var() fallbacks are 0px, so where the animation is
+// unsupported the mask is fully opaque.
+func scrollCueDecls() []string {
+	mask := "linear-gradient(to bottom, transparent 0, #000 var(" + scrollCueStart + ", 0px), " +
+		"#000 calc(100% - var(" + scrollCueEnd + ", 0px)), transparent 100%)"
+	return []string{
+		"-webkit-mask-image: " + mask + ";",
+		"mask-image: " + mask + ";",
+		"animation: tw-scroll-cue linear both;",
+		"animation-timeline: scroll(self);",
+	}
+}
+
+// scrollCueKeyframesCSS: no fade above at the top, none below at the bottom,
+// full fade at both ends of the range in between. The 4% / 96% breakpoints let
+// the fade ramp in over the first few pixels instead of popping.
+func scrollCueKeyframesCSS() string {
+	return "@property " + scrollCueStart + " { syntax: \"<length>\"; inherits: false; initial-value: 0px; }\n" +
+		"@property " + scrollCueEnd + " { syntax: \"<length>\"; inherits: false; initial-value: 0px; }\n" +
+		"@keyframes tw-scroll-cue {\n" +
+		"  0% { " + scrollCueStart + ": 0px; " + scrollCueEnd + ": " + scrollCueSize + "; }\n" +
+		"  4%, 96% { " + scrollCueStart + ": " + scrollCueSize + "; " + scrollCueEnd + ": " + scrollCueSize + "; }\n" +
+		"  100% { " + scrollCueStart + ": " + scrollCueSize + "; " + scrollCueEnd + ": 0px; }\n" +
+		"}\n\n"
+}
+
 func waveKeyframesCSS() string {
 	return "@keyframes tw-wave {\n" +
 		"  0%, 100% { transform: rotate(-3deg); }\n" +

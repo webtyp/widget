@@ -70,8 +70,23 @@ func (s *Sheet) Stylesheet() *css.Stylesheet {
 	for _, n := range frameCounts {
 		sb.WriteString(frameKeyframesCSS(n))
 	}
+	if s.usesScrollCue() {
+		sb.WriteString(scrollCueKeyframesCSS())
+	}
 
 	return css.NewStylesheet(css.Raw(sb.GetString(fmt.BuffOut)))
+}
+
+func (s *Sheet) usesScrollCue() bool {
+	if s.rootRule.scrollCue {
+		return true
+	}
+	for _, r := range s.partRules {
+		if r.scrollCue {
+			return true
+		}
+	}
+	return false
 }
 
 func (s *Sheet) usedKeyframes() (wave, pulse, blink, breathe bool, frameCounts []int) {

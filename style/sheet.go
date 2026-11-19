@@ -166,6 +166,7 @@ type rule struct {
 	hideOverflow bool
 
 	hasScrollGutter bool
+	scrollCue       bool
 	scrollGutter    Space
 
 	hasTextSize bool

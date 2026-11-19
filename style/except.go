@@ -39,6 +39,22 @@ func ScrollGutter(s Space) Option {
 	}
 }
 
+// ScrollCue tells the reader a Scroll() region holds more than it shows: the
+// edge that still has content beyond it fades out, and the fade disappears at
+// the very top and very bottom of the scroll. Without it a clipped list ends
+// mid-row and looks complete.
+//
+// CSS only: a scroll-driven animation (animation-timeline: scroll(self)) feeds
+// two registered lengths to a mask. A browser without scroll-driven animations
+// leaves both at 0px, so the region simply scrolls with no fade — nothing
+// breaks. Meaningful only on a Scroll() part; the sheet fails to build
+// otherwise.
+func ScrollCue() Option {
+	return func(r *rule) {
+		r.scrollCue = true
+	}
+}
+
 // Grow takes the free space along the inline axis and nothing else. It is the
 // Row counterpart of Fill(): Fill() also claims `height: 100%`, which inside a
 // Row resolves against the row and stretches the part into a full-height block.

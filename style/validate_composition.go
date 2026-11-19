@@ -18,6 +18,9 @@ func (s *Sheet) validateComposition(errs []error) []error {
 	// Docked()/Flyout() is the easy mistake: both of those are already
 	// containing blocks, so the Anchor is redundant as well as destructive.
 	checkPosition := func(p widget.Part, r rule) {
+		if r.scrollCue && !r.scroll {
+			errs = append(errs, fmt.Errf("sheet %s: part %q: ScrollCue() only means something on a Scroll() part", string(s.widget.WidgetName()), string(p)))
+		}
 		n := 0
 		for _, on := range []bool{r.hasAnchor, r.hasDocked, r.hasOnEdge, r.hasFlyout, r.hasBackdrop, r.hasDrawer, r.hasEdgeStrip, r.hasFloatMiddle, r.visuallyHidden} {
 			if on {

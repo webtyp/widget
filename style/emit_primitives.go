@@ -24,7 +24,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 	var masterDetailInfos []masterDetailInfo
 	var slideDeckInfos []slideDeckInfo
 
-	var fillSel, growSel, pushEndSel, scrollSel, keepSizeSel, edgeToEdgeSel, hideOverflowSel []string
+	var scrollCueSel, fillSel, growSel, pushEndSel, scrollSel, keepSizeSel, edgeToEdgeSel, hideOverflowSel []string
 	var iconCapSel []string
 	var dividerStartSel, dividerEndSel, dividerBelowSel, dividerBetweenSel []string
 
@@ -78,6 +78,9 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 		}
 		if r.pushEnd {
 			pushEndSel = append(pushEndSel, sel)
+		}
+		if r.scrollCue {
+			scrollCueSel = append(scrollCueSel, sel)
 		}
 		if r.scroll {
 			if r.hasScrollGutter {
@@ -298,6 +301,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 			"flex-grow: 1;",
 		}, floatingPadDeclsWithGutter(gi.gutter)...))
 	}
+	emitPrimitive(scrollCueSel, scrollCueDecls())
 	emitPrimitive(keepSizeSel, []string{
 		"flex-shrink: 0;",
 		"flex-grow: 0;",
