@@ -257,6 +257,16 @@ func motionDurationVar(m Motion) string {
 	}
 }
 
+// glyphColor is the text colour Glyph paints with. Subtle and Inactive are muted text: their family base is a
+// background (or none), so a glyph taken from it was invisible on a light sheet.
+func glyphColor(s Surface) css.Token {
+	switch s {
+	case Subtle, Inactive:
+		return css.ColorMuted
+	}
+	return familyBase(s)
+}
+
 func familyBase(s Surface) css.Token {
 	switch s {
 	case Panel, Inset, Highlight:

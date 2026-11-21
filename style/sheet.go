@@ -158,6 +158,7 @@ type rule struct {
 
 	fill         bool
 	grow         bool
+	oneLine      bool
 	spanFull     bool
 	pushEnd      bool
 	scroll       bool

@@ -66,6 +66,17 @@ func Grow() Option {
 	}
 }
 
+// OneLine keeps a Row's children on a single line: it never wraps. The part
+// that should give way takes Grow() (it shrinks, and its text truncates), so a
+// header with a fixed icon and a text column reads as one line at any width.
+//
+//	Part(PartHeader, style.Row(style.SpaceNone), style.OneLine())
+func OneLine() Option {
+	return func(r *rule) {
+		r.oneLine = true
+	}
+}
+
 // PushEnd sends the part to the trailing edge of its line. It is the companion
 // of Grow(): Grow() absorbs the free space so the items after it are pushed
 // out, PushEnd() moves the free space in front of a single item — the only way

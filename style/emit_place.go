@@ -76,8 +76,8 @@ func (r rule) placementDecls(layer widget.Layer) []string {
 	}
 
 	if r.hasGlyph {
-		decls = append(decls, "color: "+familyBase(r.glyph).LightValue()+";")
-		decls = append(decls, "color: "+familyBase(r.glyph).EnhancedVar()+";")
+		decls = append(decls, "color: "+glyphColor(r.glyph).LightValue()+";")
+		decls = append(decls, "color: "+glyphColor(r.glyph).EnhancedVar()+";")
 		decls = append(decls, "fill: currentColor;")
 	}
 

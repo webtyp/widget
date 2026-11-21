@@ -24,6 +24,7 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 	var masterDetailInfos []masterDetailInfo
 	var slideDeckInfos []slideDeckInfo
 
+	var oneLineSel []string
 	var scrollCueSel, fillSel, growSel, pushEndSel, scrollSel, keepSizeSel, edgeToEdgeSel, hideOverflowSel []string
 	var iconCapSel []string
 	var dividerStartSel, dividerEndSel, dividerBelowSel, dividerBetweenSel []string
@@ -75,6 +76,9 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 		}
 		if r.grow {
 			growSel = append(growSel, sel)
+		}
+		if r.oneLine {
+			oneLineSel = append(oneLineSel, sel)
 		}
 		if r.pushEnd {
 			pushEndSel = append(pushEndSel, sel)
@@ -279,6 +283,9 @@ func (s *Sheet) emitPrimitives(sb *fmt.Conv, parts []widget.Part) (autoRotateSel
 	emitPrimitive(growSel, []string{
 		"flex-grow: 1;",
 		"min-width: 0;",
+	})
+	emitPrimitive(oneLineSel, []string{
+		"flex-wrap: nowrap;",
 	})
 	emitPrimitive(pushEndSel, []string{
 		"margin-inline-start: auto;",
